@@ -7,18 +7,25 @@ export type UserDocument = HydratedDocument<User>;
 export class User {
   @Prop()
   fullname: string;
+
   @Prop()
   email: string;
+
   @Prop()
   password: string;
+
   @Prop()
   type: string;
+
   @Prop({ default: Date.now })
   createdAt: Date;
+
   @Prop()
   lastSession: Date;
+
   @Prop({ default: true })
   state: boolean;
+
   @Prop()
   image: string;
 }

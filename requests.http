@@ -1,0 +1,37 @@
+### POST RECETA
+POST http://localhost:3000/recipes HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Tarta",
+    "ingredients": "Queso, huevos, azúcar",
+    "steps": "Mezclar los ingredientes y hornear",
+    "author": "Jose",
+    "recommendations": "No comer en exceso",
+    "standardUnits": 3
+}
+
+### GET RECETAS
+GET http://localhost:3000/recipes HTTP/1.1
+
+### GET RECETA POR ID
+GET http://localhost:3000/recipes/14D24 HTTP/1.1
+
+### GET RECETA POR AUTOR
+GET http://localhost:3000/recipes?author=Jose HTTP/1.1
+
+### PUT RECETA
+PATCH  http://localhost:3000/recipes/6663743dd6f6cd3e426fc8eb HTTP/1.1
+content-type: application/json
+
+{
+    "standardUnits": "4"
+}
+
+### DELETE RECETA
+DELETE  http://localhost:3000/recipes/6663743dd6f6cd3e426fc8eb HTTP/1.1
+content-type: application/json
+
+{
+    "standardUnits": "4"
+}
