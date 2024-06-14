@@ -4,7 +4,7 @@ import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Recipe } from './schemas/recipe.schema';
 import mongoose, { Model } from 'mongoose';
-
+import { FindByDto } from './dto/find-by.dto';
 @Injectable()
 export class RecipesService {
   constructor(@InjectModel(Recipe.name) private recipeModel: Model<Recipe>) {}
@@ -25,7 +25,7 @@ export class RecipesService {
     return this.recipeModel.findOne({ _id: id });
   }
 
-  findBy(query: { name?: string; author?: string; ingredients?: string }) {
+  findBy(query: FindByDto) {
     return this.recipeModel.find(query);
   }
 

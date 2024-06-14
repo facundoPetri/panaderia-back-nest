@@ -12,6 +12,7 @@ import {
 import { RecipesService } from './recipes.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
+import { FindByDto } from './dto/find-by.dto';
 
 @Controller('recipes')
 export class RecipesController {
@@ -29,11 +30,7 @@ export class RecipesController {
   @Get()
   async findBy(
     @Query()
-    query: {
-      name?: string;
-      author?: string;
-      ingredients?: string;
-    },
+    query: FindByDto,
   ) {
     const recipe = await this.recipesService.findBy(query);
     if (!recipe) {
