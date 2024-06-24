@@ -19,14 +19,20 @@ export class ProvidersService {
   }
 
   findOne(id: string) {
-    return this.providerModel.find({ _id: id });
+    return this.providerModel.findOne({ _id: id });
   }
 
-  update(id: string, updateProviderDto: UpdateProviderDto) {
-    return `This action updates a #${id} provider`;
+  async update(id: string, updateProviderDto: UpdateProviderDto) {
+    const provider = await this.findOne(id);
+    Object.assign(provider, updateProviderDto);
+    return provider.save();
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} provider`;
+  async remove(id: string) {
+    const provider = await this.findOne(id);
+    if (!provider) {
+      return null;
+    }
+    return this.providerModel.deleteOne({ _id: id });
   }
 }
