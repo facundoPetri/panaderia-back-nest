@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { CreateSupplyDto } from './dto/create-supply.dto';
 import { UpdateSupplyDto } from './dto/update-supply.dto';
 import { Supply } from './schemas/supply.schema';
@@ -19,7 +19,7 @@ export class SuppliesService {
   }
 
   findOne(id: string) {
-    if (!mongoose.Types.ObjectId.isValid(id) || !id) {
+    if (!id) {
       return null;
     }
     return this.supplyModel.findOne({ _id: id });

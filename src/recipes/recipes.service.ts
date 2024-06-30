@@ -3,8 +3,9 @@ import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Recipe } from './schemas/recipe.schema';
-import mongoose, { Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { FindByDto } from './dto/find-by.dto';
+
 @Injectable()
 export class RecipesService {
   constructor(@InjectModel(Recipe.name) private recipeModel: Model<Recipe>) {}
@@ -19,7 +20,7 @@ export class RecipesService {
   }
 
   findOne(id: string) {
-    if (!mongoose.Types.ObjectId.isValid(id) || !id) {
+    if (!id) {
       return null;
     }
     return this.recipeModel.findOne({ _id: id });

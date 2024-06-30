@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { SuppliesService } from './supplies.service';
 import { CreateSupplyDto } from './dto/create-supply.dto';
 import { UpdateSupplyDto } from './dto/update-supply.dto';
+import { ParseObjectIdPipe } from '../pipes/parse-object-id-pipe.pipe';
 
 @Controller('supplies')
 export class SuppliesController {
@@ -18,17 +19,17 @@ export class SuppliesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.suppliesService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSupplyDto: UpdateSupplyDto) {
+  update(@Param('id', ParseObjectIdPipe) id: string, @Body() updateSupplyDto: UpdateSupplyDto) {
     return this.suppliesService.update(id, updateSupplyDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.suppliesService.remove(id);
   }
 }
