@@ -19,9 +19,8 @@ export class CreateSupplyDto {
   @Length(3, 1000)
   description: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  @Length(3, 50)
   usedIn: string[];
 
   @IsNotEmpty()
@@ -36,12 +35,15 @@ export class CreateSupplyDto {
 
   @IsNotEmpty()
   @IsString()
-  @Length(3, 50)
   unit: string;
 
   @IsNotEmpty()
   @IsNumber()
   size: string;
+
+  @IsOptional()
+  @IsString()
+  type: string;
 
   @IsOptional()
   @IsUrl()

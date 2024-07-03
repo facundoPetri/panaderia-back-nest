@@ -7,7 +7,9 @@ import { Provider } from './schemas/provider.schema';
 
 @Injectable()
 export class ProvidersService {
-  constructor(@InjectModel(Provider.name) private providerModel: Model<Provider>) {}
+  constructor(
+    @InjectModel(Provider.name) private providerModel: Model<Provider>,
+  ) {}
 
   create(createProviderDto: CreateProviderDto) {
     const provider = new this.providerModel(createProviderDto);
@@ -15,11 +17,11 @@ export class ProvidersService {
   }
 
   findAll() {
-    return this.providerModel.find();
+    return this.providerModel.find().populate('supplies').exec();
   }
 
   findOne(id: string) {
-    return this.providerModel.findOne({ _id: id });
+    return this.providerModel.findOne({ _id: id }).populate('supplies').exec();
   }
 
   async update(id: string, updateProviderDto: UpdateProviderDto) {

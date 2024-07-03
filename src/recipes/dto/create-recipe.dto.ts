@@ -1,4 +1,11 @@
-import { IsString, IsOptional, IsNumber, Length } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsNumber,
+  Length,
+  IsMongoId,
+  IsNotEmpty,
+} from 'class-validator';
 
 export class CreateRecipeDto {
   @IsString()
@@ -26,4 +33,8 @@ export class CreateRecipeDto {
 
   @IsNumber()
   standardUnits: number;
+
+  @IsNotEmpty()
+  @IsMongoId({ each: true })
+  supplies: string[];
 }

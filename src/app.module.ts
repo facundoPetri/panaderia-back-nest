@@ -7,6 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RecipesModule } from './recipes/recipes.module';
 import { SuppliesModule } from './supplies/supplies.module';
 import { ProvidersModule } from './providers/providers.module';
+import { MachinesModule } from './machines/machines.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ProvidersModule } from './providers/providers.module';
     RecipesModule,
     SuppliesModule,
     ProvidersModule,
+    MachinesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

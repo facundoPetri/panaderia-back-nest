@@ -5,6 +5,7 @@ import {
   IsEmail,
   IsUrl,
   Length,
+  IsMongoId,
 } from 'class-validator';
 
 export class CreateProviderDto {
@@ -22,9 +23,8 @@ export class CreateProviderDto {
   @IsNotEmpty()
   email: string;
 
-  @IsString()
-  @IsNotEmpty()
-  supplies: string;
+  @IsMongoId({ each: true })
+  supplies: string[];
 
   @IsUrl()
   @IsOptional()

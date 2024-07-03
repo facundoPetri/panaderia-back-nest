@@ -1,0 +1,23 @@
+### POST PROVEEDORES
+POST http://localhost:3000/providers HTTP/1.1
+content-type: application/json
+
+{
+    "name": "prueba 1",
+    "phone": "123456789",
+    "email": "asd@asd.com",
+    "supplies": ["6682e1ffbc32d9f674079daf", "6682e20fbc32d9f674079db1"]
+}
+### GET ALL PROVEEDORES
+GET http://localhost:3000/providers HTTP/1.1
+### GET POR ID PROVEEDORES
+GET http://localhost:3000/providers/6682e25101ac30ecb1e055a2 HTTP/1.1
+### PUT PROVEEDORES
+PATCH http://localhost:3000/providers/6682e25101ac30ecb1e055a2 HTTP/1.1
+content-type: application/json
+
+{
+    "named": "bimbo"
+}
+### DELETE PROVEEDORES
+DELETE http://localhost:3000/providers/6681d8ec3ba45a93828f4670 HTTP/1.1

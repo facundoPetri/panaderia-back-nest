@@ -16,14 +16,14 @@ export class RecipesService {
   }
 
   findAll() {
-    return this.recipeModel.find();
+    return this.recipeModel.find().populate('supplies').exec();
   }
 
   findOne(id: string) {
     if (!id) {
       return null;
     }
-    return this.recipeModel.findOne({ _id: id });
+    return this.recipeModel.findOne({ _id: id }).populate('supplies').exec();
   }
 
   findBy(query: FindByDto) {
