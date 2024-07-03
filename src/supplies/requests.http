@@ -1,0 +1,26 @@
+### POST INSUMOS
+POST http://localhost:3000/supplies HTTP/1.1
+content-type: application/json
+
+{
+    "name": "prueba 2",
+    "description": "prueba 1",
+    "min_stock": 1,
+    "max_stock": 1,
+    "unit": "kg",
+    "size": 1,
+    "usedIn": "asdasdas"
+}
+### GET ALL INSUMOS
+GET http://localhost:3000/supplies HTTP/1.1
+### GET POR ID INSUMOS
+GET http://localhost:3000/supplies/6681d8ec3ba45a93828f4670 HTTP/1.1
+### PUT INSUMOS
+PATCH http://localhost:3000/supplies/6681d8ec3ba45a93828f4670 HTTP/1.1
+content-type: application/json
+
+{
+    "name": "amasadora 2"
+}
+### DELETE INSUMOS
+DELETE http://localhost:3000/supplies/6681d8ec3ba45a93828f4670 HTTP/1.1

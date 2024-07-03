@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { Supply } from '../../supplies/schemas/supply.schema';
 
 export type RecipeDocument = HydratedDocument<Recipe>;
 
@@ -8,8 +9,8 @@ export class Recipe {
   @Prop()
   name: string;
 
-  @Prop()
-  ingredients: string;
+  @Prop([{ type: 'ObjectId', ref: 'Supply' }])
+  supplies: Supply[];
 
   @Prop()
   steps: string;
@@ -35,7 +36,7 @@ export class Recipe {
   @Prop({ default: Date.now })
   createdAt: Date;
 
-  @Prop()
+  @Prop({ default: Date.now })
   updatedAt: Date;
 }
 

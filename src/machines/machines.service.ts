@@ -1,0 +1,37 @@
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { CreateMachineDto } from './dto/create-machine.dto';
+import { UpdateMachineDto } from './dto/update-machine.dto';
+import { Machine } from './schemas/machine.schema';
+
+@Injectable()
+export class MachinesService {
+  constructor(
+    @InjectModel(Machine.name) private machineModel: Model<Machine>,
+  ) {}
+
+  create(createMachineDto: CreateMachineDto) {
+    const machine = new this.machineModel(createMachineDto);
+    return machine.save();
+  }
+
+  findAll(): Promise<Machine[]> {
+    return this.machineModel.find().populate('user_id').exec();
+  }
+
+  findOne(id: string): Promise<Machine> {
+    return this.machineModel.findById(id).populate('user_id').exec();
+  }
+
+  async update(id: string, updateMachineDto: UpdateMachineDto) {
+    const machine = await this.findOne(id);
+    Object.assign(machine, updateMachineDto);
+    return this.machineModel.updateOne(machine);
+  }
+
+  async remove(id: string) {
+    const machine = await this.findOne(id);
+    return this.machineModel.deleteOne(machine);
+  }
+}

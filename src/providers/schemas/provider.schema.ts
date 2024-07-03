@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { Supply } from '../../supplies/schemas/supply.schema';
 
 export type ProviderDocument = HydratedDocument<Provider>;
 
@@ -14,8 +15,8 @@ export class Provider {
   @Prop()
   email: string;
 
-  @Prop()
-  supplies: string;
+  @Prop([{ type: 'ObjectId', ref: 'Supply' }])
+  supplies: Supply[];
 
   @Prop()
   image: string;

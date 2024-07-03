@@ -46,7 +46,10 @@ export class RecipesController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseObjectIdPipe) id: string, @Body() updateRecipeDto: UpdateRecipeDto) {
+  update(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() updateRecipeDto: UpdateRecipeDto,
+  ) {
     return this.recipesService.update(id, updateRecipeDto);
   }
 
