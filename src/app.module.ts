@@ -8,6 +8,7 @@ import { RecipesModule } from './recipes/recipes.module';
 import { SuppliesModule } from './supplies/supplies.module';
 import { ProvidersModule } from './providers/providers.module';
 import { MachinesModule } from './machines/machines.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { MachinesModule } from './machines/machines.module';
     SuppliesModule,
     ProvidersModule,
     MachinesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
