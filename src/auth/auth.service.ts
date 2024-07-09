@@ -7,7 +7,9 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from 'src/users/users.service';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
-import mongoose from 'mongoose';
+import { User } from '../users/schemas/user.schema';
+import { UserRole } from './dto/sign-up.dto';
+import { UserResponse } from './interfaces/user-response.interface';
 
 const scrypt = promisify(_scrypt);
 
@@ -18,10 +20,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(
-    email: string,
-    password: string,
-  ): Promise<{ access_token: string }> {
+  async signIn(email: string, password: string): Promise<UserResponse> {
     const user = await this.usersService.findOneByEmail(email);
     if (!user) {
       throw new UnauthorizedException();
@@ -35,13 +34,24 @@ export class AuthService {
       throw new BadRequestException('Invalid credentials');
     }
 
-    return this.generateToken(user.email, user._id);
+    const access_token = await this.generateToken(user);
+
+    return {
+      fullname: user.fullname,
+      type: user.type,
+      image: user.image,
+      email,
+      access_token,
+    };
   }
 
   async signUp(
     email: string,
     password: string,
-  ): Promise<{ access_token: string }> {
+    fullname: string,
+    type: UserRole,
+    image?: string,
+  ): Promise<UserResponse> {
     const user = await this.usersService.findOneByEmail(email);
     if (user) {
       throw new BadRequestException('Email in use');
@@ -54,17 +64,26 @@ export class AuthService {
     const result = salt + '.' + hash.toString('hex');
 
     const createdUser = await this.usersService.create({
+      fullname,
+      type,
+      image,
       email,
       password: result,
     });
 
-    return this.generateToken(createdUser.email, createdUser._id);
+    const access_token = await this.generateToken(createdUser);
+
+    return {
+      fullname,
+      type,
+      image,
+      email,
+      access_token,
+    };
   }
 
-  async generateToken(email: string, sub: mongoose.Types.ObjectId) {
-    const payload = { email, sub };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+  generateToken({ email, _id }: User) {
+    const payload = { email, sub: _id };
+    return this.jwtService.signAsync(payload);
   }
 }

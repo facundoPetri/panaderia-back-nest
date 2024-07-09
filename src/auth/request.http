@@ -3,7 +3,7 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "asd2@asd.com",
+    "email": "asd4@asd.com",
     "password": "123456"
 }
 ### REGISTRARSE
@@ -11,8 +11,10 @@ POST http://localhost:3000/auth/signup
 Content-Type: application/json
 
 {
-    "email": "asd2@asd.com",
-    "password": "123456"
+    "fullname": "asd asd",
+    "email": "asd4@asd.com",
+    "password": "123456",
+    "type": "admin"
 }
 ### PRUEBA AUTH
 GET http://localhost:3000/auth/profile
