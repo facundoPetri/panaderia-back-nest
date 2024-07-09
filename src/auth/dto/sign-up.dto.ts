@@ -12,7 +12,7 @@ import { Transform } from 'class-transformer';
 export enum UserRole {
   USER = 'user',
   ADMIN = 'admin',
-  BLOGGER = 'blogger',
+  MASTER = 'master',
 }
 
 export class SignUpDto {
