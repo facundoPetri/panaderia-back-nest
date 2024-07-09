@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
+import { SignUpDto } from './dto/sign-up.dto';
 import { Public } from './decorators/public.decorator';
 
 @Controller('auth')
@@ -25,8 +26,14 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Public()
   @Post('/signup')
-  async createUser(@Body() body: SignInDto) {
-    const user = await this.authService.signUp(body.email, body.password);
+  async signUp(@Body() body: SignUpDto) {
+    const user = await this.authService.signUp(
+      body.email,
+      body.password,
+      body.fullname,
+      body.type,
+      body.image,
+    );
 
     return user;
   }
