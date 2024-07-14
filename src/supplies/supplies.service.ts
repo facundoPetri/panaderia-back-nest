@@ -15,14 +15,14 @@ export class SuppliesService {
   }
 
   findAll() {
-    return this.supplyModel.find();
+    return this.supplyModel.find().populate('usedIn');
   }
 
   findOne(id: string) {
     if (!id) {
       return null;
     }
-    return this.supplyModel.findOne({ _id: id });
+    return this.supplyModel.findOne({ _id: id }).populate('usedIn');
   }
 
   async update(id: string, updateSupplyDto: UpdateSupplyDto) {
