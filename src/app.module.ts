@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+
+import { UsersModule } from './users/users.module';
 import { RecipesModule } from './recipes/recipes.module';
 import { SuppliesModule } from './supplies/supplies.module';
 import { ProvidersModule } from './providers/providers.module';
@@ -19,6 +20,12 @@ import { AuthModule } from './auth/auth.module';
         uri: configService.get<string>('DATABASE_URI'),
       }),
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '..', 'public'),
+      serveStaticOptions: {
+        index: false,
+      },
+    }),
     UsersModule,
     RecipesModule,
     SuppliesModule,
@@ -26,7 +33,5 @@ import { AuthModule } from './auth/auth.module';
     MachinesModule,
     AuthModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
