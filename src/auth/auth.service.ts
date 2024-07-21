@@ -22,6 +22,7 @@ export class AuthService {
 
   async signIn(email: string, password: string): Promise<UserResponse> {
     const user = await this.usersService.findOneByEmail(email);
+
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -33,6 +34,9 @@ export class AuthService {
     if (storedHash !== hash.toString('hex')) {
       throw new BadRequestException('Invalid credentials');
     }
+
+    user.lastSession = new Date();
+    user.save();
 
     const access_token = await this.generateToken(user);
 

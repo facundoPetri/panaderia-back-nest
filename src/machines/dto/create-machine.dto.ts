@@ -2,10 +2,10 @@ import {
   IsString,
   IsNotEmpty,
   Length,
-  IsDate,
   IsNumber,
   IsMongoId,
   IsDateString,
+  IsOptional,
 } from 'class-validator';
 
 export class CreateMachineDto {
@@ -27,4 +27,8 @@ export class CreateMachineDto {
 
   @IsMongoId()
   user_id: string;
+
+  @IsDateString()
+  @IsOptional()
+  last_maintenance_date: string;
 }
