@@ -22,7 +22,7 @@ export class User {
   @Prop({ default: Date.now })
   createdAt: Date;
 
-  @Prop()
+  @Prop({ default: Date.now })
   lastSession: Date;
 
   @Prop({ default: true })

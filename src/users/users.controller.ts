@@ -17,10 +17,14 @@ import { ParseObjectIdPipe } from '../pipes/parse-object-id-pipe.pipe';
 import { SignUpDto } from 'src/auth/dto/sign-up.dto';
 import { Public } from '../auth/decorators/public.decorator';
 import { generatePdf } from '../../helpers/handlebars';
+import { PdfService } from 'src/pdf/pdf.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private pdfService: PdfService,
+  ) {}
 
   @Post()
   create(@Body() createUserDto: SignUpDto) {
@@ -33,10 +37,10 @@ export class UsersController {
   }
 
   @Get('generate-pdf')
-  @Header('content-type', 'application/pdf')
-  @Header('content-disposition', 'attachment; filename=download.pdf')
+  @Header('Content-Type', 'application/pdf')
+  @Header('Content-Disposition', 'attachment; filename="filename.pdf"')
   @Public()
-  async generatePdf(@Res() res: Response) {
+  async generatePdf(@Res() res: Response): Promise<void> {
     const users = await this.usersService.findAll();
 
     const html = generatePdf({
@@ -53,13 +57,16 @@ export class UsersController {
       ],
     });
 
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setContent(html);
-    const pdf = await page.pdf({ format: 'A4' });
-    await browser.close();
+    const buffer = await this.pdfService.generate(html);
 
-    res.send(pdf);
+    res.set({
+      'Content-Length': buffer.length,
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: 0,
+    });
+
+    res.end(buffer);
   }
 
   @Get(':id')
@@ -69,8 +76,11 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseObjectIdPipe) id: string) {
-    return this.usersService.update(id);
+  update(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() signUpDto: Partial<SignUpDto>,
+  ) {
+    return this.usersService.update(id, signUpDto);
   }
 
   @Delete(':id')

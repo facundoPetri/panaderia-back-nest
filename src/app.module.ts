@@ -10,6 +10,7 @@ import { SuppliesModule } from './supplies/supplies.module';
 import { ProvidersModule } from './providers/providers.module';
 import { MachinesModule } from './machines/machines.module';
 import { AuthModule } from './auth/auth.module';
+import { PdfService } from './pdf/pdf.service';
 
 @Module({
   imports: [
@@ -33,5 +34,6 @@ import { AuthModule } from './auth/auth.module';
     MachinesModule,
     AuthModule,
   ],
+  providers: [PdfService],
 })
 export class AppModule {}

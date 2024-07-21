@@ -3,8 +3,9 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 
 const formatDate = (initialDate: string) => {
+  if (!initialDate) return '';
   const date = new Date(initialDate);
-  const dateFormat = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  const dateFormat = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`;
   return dateFormat;
 };
 
