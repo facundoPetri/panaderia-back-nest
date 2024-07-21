@@ -1,0 +1,37 @@
+import hbs from 'handlebars';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+const formatDate = (initialDate: string) => {
+  const date = new Date(initialDate);
+  const dateFormat = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  return dateFormat;
+};
+
+hbs.registerHelper('formatDate', formatDate);
+hbs.registerHelper('today', function () {
+  const today = new Date();
+  return today.toLocaleDateString('es-ES', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+});
+
+export const generatePdf = ({ title, user, data, headers }) => {
+  const templateHtml = readFileSync(
+    join(process.cwd(), 'views/index.hbs'),
+    'utf8',
+  );
+
+  const template = hbs.compile(templateHtml);
+  const html = template({
+    title,
+    user,
+    data,
+    headers,
+  });
+
+  return html;
+};
