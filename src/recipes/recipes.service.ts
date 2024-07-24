@@ -10,20 +10,21 @@ import { FindByDto } from './dto/find-by.dto';
 export class RecipesService {
   constructor(@InjectModel(Recipe.name) private recipeModel: Model<Recipe>) {}
 
-  create(createRecipeDto: CreateRecipeDto) {
+  create(createRecipeDto: CreateRecipeDto, user: any) {
     const recipe = new this.recipeModel(createRecipeDto);
+    recipe.author = user._id;
     return recipe.save();
   }
 
   findAll() {
-    return this.recipeModel.find().populate('supplies').exec();
+    return this.recipeModel.find().populate(['supplies', 'author']).exec();
   }
 
   findOne(id: string) {
     if (!id) {
       return null;
     }
-    return this.recipeModel.findOne({ _id: id }).populate('supplies').exec();
+    return this.recipeModel.findOne({ _id: id }).populate(['supplies', 'author']).exec();
   }
 
   findBy(query: FindByDto) {
