@@ -14,6 +14,7 @@ import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { FindByDto } from './dto/find-by.dto';
 import { ParseObjectIdPipe } from '../pipes/parse-object-id-pipe.pipe';
+import { CurrentUser } from 'src/users/decorators/current-user.decorator';
 
 @Controller('recipes')
 export class RecipesController {
@@ -41,8 +42,8 @@ export class RecipesController {
   }
 
   @Post()
-  create(@Body() createRecipeDto: CreateRecipeDto) {
-    return this.recipesService.create(createRecipeDto);
+  create(@Body() createRecipeDto: CreateRecipeDto, @CurrentUser() user: any) {
+    return this.recipesService.create(createRecipeDto, user);
   }
 
   @Patch(':id')
