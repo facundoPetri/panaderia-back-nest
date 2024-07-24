@@ -9,7 +9,6 @@ import {
   Header,
   Res,
 } from '@nestjs/common';
-import puppeteer from 'puppeteer';
 import { Response } from 'express';
 
 import { UsersService } from './users.service';
@@ -38,7 +37,7 @@ export class UsersController {
 
   @Get('generate-pdf')
   @Header('Content-Type', 'application/pdf')
-  @Header('Content-Disposition', 'attachment; filename="filename.pdf"')
+  @Header('Content-Disposition', 'attachment; filename="users.pdf"')
   @Public()
   async generatePdf(@Res() res: Response): Promise<void> {
     const users = await this.usersService.findAll();
@@ -55,6 +54,7 @@ export class UsersController {
         'Fecha de Creación',
         'Último inicio',
       ],
+      tableTemplate: 'users',
     });
 
     const buffer = await this.pdfService.generate(html);

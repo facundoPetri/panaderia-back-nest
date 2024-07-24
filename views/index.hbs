@@ -38,22 +38,7 @@
             {{/each}}
           </tr>
         </thead>
-        <tbody>
-          {{#each data}}
-            <tr>
-              <td>{{fullname}}</td>
-              <td>{{email}}</td>
-              {{#if state}}
-                <td>Activo</td>
-              {{else}}
-                <td>Inactivo</td>
-              {{/if}}
-              <td>{{type}}</td>
-              <td>{{formatDate createdAt}}</td>
-              <td>{{formatDate lastSession}}</td>
-            </tr>
-          {{/each}}
-        </tbody>
+          {{> tableBody}}
       </table>
     </div>
     <script
