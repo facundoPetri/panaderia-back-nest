@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 import { Supply } from '../../supplies/schemas/supply.schema';
+import { User } from 'src/users/schemas/user.schema';
 
 export type RecipeDocument = HydratedDocument<Recipe>;
 
@@ -12,11 +13,11 @@ export class Recipe {
   @Prop([{ type: 'ObjectId', ref: 'Supply' }])
   supplies: Supply[];
 
-  @Prop()
-  steps: string;
+  @Prop({ type: 'ObjectId', ref: 'User' })
+  author: User;
 
   @Prop()
-  author: string;
+  steps: string;
 
   @Prop()
   recommendations: string;

@@ -20,11 +20,17 @@ hbs.registerHelper('today', function () {
   });
 });
 
-export const generatePdf = ({ title, user, data, headers }) => {
+export const generatePdf = ({ title, user, data, headers, tableTemplate }) => {
   const templateHtml = readFileSync(
     join(process.cwd(), 'views/index.hbs'),
     'utf8',
   );
+  const tableTemplateHtml = readFileSync(
+    join(process.cwd(), `views/${tableTemplate}.hbs`),
+    'utf8',
+  );
+
+  hbs.registerPartial('tableBody', tableTemplateHtml);
 
   const template = hbs.compile(templateHtml);
   const html = template({
