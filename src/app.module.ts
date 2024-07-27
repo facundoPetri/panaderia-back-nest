@@ -11,6 +11,7 @@ import { ProvidersModule } from './providers/providers.module';
 import { MachinesModule } from './machines/machines.module';
 import { AuthModule } from './auth/auth.module';
 import { PdfService } from './pdf/pdf.service';
+import { BatchModule } from './batch/batch.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { PdfService } from './pdf/pdf.service';
     ProvidersModule,
     MachinesModule,
     AuthModule,
+    BatchModule,
   ],
   providers: [PdfService],
 })

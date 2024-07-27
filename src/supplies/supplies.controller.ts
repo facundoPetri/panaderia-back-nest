@@ -20,7 +20,10 @@ import { generatePdf } from '../../helpers/handlebars';
 
 @Controller('supplies')
 export class SuppliesController {
-  constructor(private readonly suppliesService: SuppliesService, private readonly pdfService: PdfService) {}
+  constructor(
+    private readonly suppliesService: SuppliesService,
+    private readonly pdfService: PdfService,
+  ) {}
 
   @Post()
   create(@Body() createSupplyDto: CreateSupplyDto) {
@@ -33,6 +36,7 @@ export class SuppliesController {
   @Public()
   async generatePdf(@Res() res: Response): Promise<void> {
     const supplies = await this.suppliesService.findAll();
+    console.log('🚀 ~ supplies:', supplies);
 
     const html = generatePdf({
       title: 'Lista de Recetas',

@@ -6,6 +6,7 @@ import {
   Max,
   IsOptional,
   IsUrl,
+  IsMongoId,
 } from 'class-validator';
 
 export class CreateSupplyDto {
@@ -48,4 +49,8 @@ export class CreateSupplyDto {
   @IsOptional()
   @IsUrl()
   image: string;
+
+  @IsOptional()
+  @IsMongoId({ each: true })
+  batches: string[];
 }
