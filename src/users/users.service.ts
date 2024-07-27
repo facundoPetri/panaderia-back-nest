@@ -17,7 +17,7 @@ export class UsersService {
     return this.userModel.find().lean();
   }
 
-  findOne(id: string): Promise<User> {
+  findOne(id: string) {
     return this.userModel.findById(id);
   }
 
@@ -27,8 +27,11 @@ export class UsersService {
 
   async update(id: string, updateUserDto: Partial<SignUpDto>) {
     const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     Object.assign(user, updateUserDto);
-    return this.userModel.updateOne(user);
+    return user.save();
   }
 
   async remove(id: string) {

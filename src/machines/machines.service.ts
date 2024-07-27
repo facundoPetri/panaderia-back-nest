@@ -20,18 +20,24 @@ export class MachinesService {
     return this.machineModel.find().populate('user_id').exec();
   }
 
-  findOne(id: string): Promise<Machine> {
+  findOne(id: string) {
     return this.machineModel.findById(id).populate('user_id').exec();
   }
 
   async update(id: string, updateMachineDto: UpdateMachineDto) {
     const machine = await this.findOne(id);
+    if (!machine) {
+      return null;
+    }
     Object.assign(machine, updateMachineDto);
-    return this.machineModel.updateOne(machine);
+    return machine.save();
   }
 
   async remove(id: string) {
     const machine = await this.findOne(id);
-    return this.machineModel.deleteOne(machine);
+    if (!machine) {
+      return null;
+    }
+    return this.machineModel.deleteOne({ _id: id });
   }
 }

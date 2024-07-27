@@ -13,9 +13,6 @@ export class CreateRecipeDto {
   name: string;
 
   @IsString()
-  ingredients: string[];
-
-  @IsString()
   steps: string;
 
   @IsString()

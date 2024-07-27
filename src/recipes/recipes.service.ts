@@ -24,7 +24,10 @@ export class RecipesService {
     if (!id) {
       return null;
     }
-    return this.recipeModel.findOne({ _id: id }).populate(['supplies', 'author']).exec();
+    return this.recipeModel
+      .findOne({ _id: id })
+      .populate(['supplies', 'author'])
+      .exec();
   }
 
   findBy(query: FindByDto) {
