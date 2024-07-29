@@ -18,4 +18,7 @@ export class CreateBatchDto {
 
   @IsNumber()
   column: number;
+
+  @IsMongoId()
+  supplyId: string;
 }

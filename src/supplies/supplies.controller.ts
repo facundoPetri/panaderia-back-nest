@@ -36,7 +36,6 @@ export class SuppliesController {
   @Public()
   async generatePdf(@Res() res: Response): Promise<void> {
     const supplies = await this.suppliesService.findAll();
-    console.log('🚀 ~ supplies:', supplies);
 
     const html = generatePdf({
       title: 'Lista de Recetas',
@@ -76,7 +75,7 @@ export class SuppliesController {
   @Patch(':id')
   update(
     @Param('id', ParseObjectIdPipe) id: string,
-    @Body() updateSupplyDto: UpdateSupplyDto,
+    @Body() updateSupplyDto: Partial<CreateSupplyDto>,
   ) {
     return this.suppliesService.update(id, updateSupplyDto);
   }
