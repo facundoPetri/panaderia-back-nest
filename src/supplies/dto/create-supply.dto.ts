@@ -3,7 +3,6 @@ import {
   IsString,
   Length,
   IsNumber,
-  Max,
   IsOptional,
   IsUrl,
   IsMongoId,
@@ -21,17 +20,15 @@ export class CreateSupplyDto {
   description: string;
 
   @IsOptional()
-  @IsString()
+  @IsMongoId({ each: true })
   usedIn: string[];
 
   @IsNotEmpty()
   @IsNumber()
-  @Max(1000)
   min_stock: number;
 
   @IsNotEmpty()
   @IsNumber()
-  @Max(1000)
   max_stock: number;
 
   @IsNotEmpty()
