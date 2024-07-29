@@ -15,10 +15,6 @@ export class CreateRecipeDto {
   @IsString()
   steps: string;
 
-  @IsString()
-  @Length(3, 50)
-  author: string;
-
   @IsOptional()
   @IsString()
   @Length(3, 1000)
