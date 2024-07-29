@@ -14,7 +14,6 @@ import { Response } from 'express';
 import { UsersService } from './users.service';
 import { ParseObjectIdPipe } from '../pipes/parse-object-id-pipe.pipe';
 import { SignUpDto } from 'src/auth/dto/sign-up.dto';
-import { Public } from '../auth/decorators/public.decorator';
 import { generatePdf } from '../../helpers/handlebars';
 import { PdfService } from 'src/pdf/pdf.service';
 
@@ -38,7 +37,6 @@ export class UsersController {
   @Get('generate-pdf')
   @Header('Content-Type', 'application/pdf')
   @Header('Content-Disposition', 'attachment; filename="users.pdf"')
-  @Public()
   async generatePdf(@Res() res: Response): Promise<void> {
     const users = await this.usersService.findAll();
 
@@ -70,7 +68,6 @@ export class UsersController {
   }
 
   @Get(':id')
-  @Public()
   findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.usersService.findOne(id);
   }

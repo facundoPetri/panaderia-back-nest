@@ -14,8 +14,9 @@ import { SuppliesService } from './supplies.service';
 import { CreateSupplyDto } from './dto/create-supply.dto';
 import { ParseObjectIdPipe } from '../pipes/parse-object-id-pipe.pipe';
 import { PdfService } from 'src/pdf/pdf.service';
-import { Public } from '../auth/decorators/public.decorator';
 import { generatePdf } from '../../helpers/handlebars';
+import { CurrentUser } from 'src/users/decorators/current-user.decorator';
+import { User } from 'src/users/schemas/user.schema';
 
 @Controller('supplies')
 export class SuppliesController {
@@ -32,13 +33,12 @@ export class SuppliesController {
   @Get('generate-pdf')
   @Header('Content-Type', 'application/pdf')
   @Header('Content-Disposition', 'attachment; filename="supplies.pdf"')
-  @Public()
-  async generatePdf(@Res() res: Response): Promise<void> {
+  async generatePdf(@Res() res: Response, @CurrentUser() user: User): Promise<void> {
     const supplies = await this.suppliesService.findAll();
 
     const html = generatePdf({
-      title: 'Lista de Recetas',
-      user: 'John Doe',
+      title: 'Listado de Insumos',
+      user: user.fullname,
       data: supplies,
       headers: [
         'Nombre',
