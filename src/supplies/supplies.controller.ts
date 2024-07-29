@@ -12,7 +12,6 @@ import {
 import { Response } from 'express';
 import { SuppliesService } from './supplies.service';
 import { CreateSupplyDto } from './dto/create-supply.dto';
-import { UpdateSupplyDto } from './dto/update-supply.dto';
 import { ParseObjectIdPipe } from '../pipes/parse-object-id-pipe.pipe';
 import { PdfService } from 'src/pdf/pdf.service';
 import { Public } from '../auth/decorators/public.decorator';

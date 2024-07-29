@@ -11,14 +11,24 @@ import { BatchService } from './batch.service';
 import { CreateBatchDto } from './dto/create-batch.dto';
 import { UpdateBatchDto } from './dto/update-batch.dto';
 import { ParseObjectIdPipe } from '../pipes/parse-object-id-pipe.pipe';
+import { SuppliesService } from 'src/supplies/supplies.service';
 
 @Controller('batch')
 export class BatchController {
-  constructor(private readonly batchService: BatchService) {}
+  constructor(
+    private readonly batchService: BatchService,
+    private readonly suppliesService: SuppliesService,
+  ) {}
 
   @Post()
-  create(@Body() createBatchDto: CreateBatchDto) {
-    return this.batchService.create(createBatchDto);
+  async create(@Body() createBatchDto: CreateBatchDto) {
+    const supply = await this.suppliesService.findOne(createBatchDto.supplyId);
+    if (!supply) {
+      throw new Error('insumo no encontrado');
+    }
+    const batch = await this.batchService.create(createBatchDto);
+    await this.suppliesService.addBatch(supply, batch);
+    return batch;
   }
 
   @Get()
