@@ -13,6 +13,8 @@ content-type: application/json
 }
 ### GET ALL INSUMOS
 GET http://localhost:3000/supplies HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzZDRAYXNkLmNvbSIsInN1YiI6IjY2OGNiYTYxODY5ZTRmNTIzYTQzYmU4ZiIsImlhdCI6MTcyMjI4MjI1NiwiZXhwIjoxNzIyMzEyMjU2fQ.FInvZyBfdcosrig6c64C106WLn8gKAnH8TNMZybuFFY
+
 ### GET POR ID INSUMOS
 GET http://localhost:3000/supplies/6681d8ec3ba45a93828f4670 HTTP/1.1
 ### PUT INSUMOS

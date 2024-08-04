@@ -11,5 +11,6 @@ import { PdfService } from 'src/pdf/pdf.service';
   ],
   controllers: [SuppliesController],
   providers: [SuppliesService, PdfService],
+  exports: [SuppliesService],
 })
 export class SuppliesModule {}

@@ -22,6 +22,9 @@ export class Batch {
 
   @Prop()
   column: number;
+
+  @Prop()
+  supply_id: string;
 }
 
 export const BatchSchema = SchemaFactory.createForClass(Batch);

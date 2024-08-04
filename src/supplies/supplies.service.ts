@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateSupplyDto } from './dto/create-supply.dto';
-import { UpdateSupplyDto } from './dto/update-supply.dto';
-import { Supply } from './schemas/supply.schema';
+import { SupplyDocument, Supply } from './schemas/supply.schema';
+import { BatchDocument } from '../batch/schemas/batch.schema';
 
 @Injectable()
 export class SuppliesService {
@@ -14,23 +14,51 @@ export class SuppliesService {
     return supply.save();
   }
 
-  findAll() {
-    return this.supplyModel.find().populate('usedIn');
+  async findAll() {
+    const supplies = await this.supplyModel.aggregate([
+      {
+        $lookup: {
+          from: 'batches',
+          localField: '_id',
+          foreignField: 'supply_id',
+          as: 'batches',
+          pipeline:[
+            { $sort: { date_of_entry: -1 } }
+          ]
+        },
+      },
+      {
+        $addFields: {
+          current_stock: {
+            $sum: '$batches.quantity',
+          },
+        },
+      },
+    ]);
+
+    return this.supplyModel.populate(supplies, { path: 'usedIn' });
   }
 
   findOne(id: string) {
     if (!id) {
       return null;
     }
-    return this.supplyModel.findOne({ _id: id }).populate('usedIn');
+    return this.supplyModel
+      .findOne({ _id: id })
+      .populate(['usedIn', 'batches']);
   }
 
-  async update(id: string, updateSupplyDto: UpdateSupplyDto) {
+  async update(id: string, updateSupplyDto: Partial<CreateSupplyDto>) {
     const supply = await this.findOne(id);
     if (!supply) {
       throw new NotFoundException('supply not found');
     }
     Object.assign(supply, updateSupplyDto);
+    return supply.save();
+  }
+
+  async addBatch(supply: SupplyDocument, batch: BatchDocument) {
+    supply.batches.push(batch);
     return supply.save();
   }
 

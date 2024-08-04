@@ -26,9 +26,6 @@ export class Machine {
 
   @Prop()
   updatedAt: Date;
-
-  @Prop({ type: 'ObjectId', ref: 'User' })
-  user_id: User;
 }
 
 export const MachineSchema = SchemaFactory.createForClass(Machine);

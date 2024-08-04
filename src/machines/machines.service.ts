@@ -17,11 +17,11 @@ export class MachinesService {
   }
 
   findAll(): Promise<Machine[]> {
-    return this.machineModel.find().populate('user_id').exec();
+    return this.machineModel.find();
   }
 
   findOne(id: string) {
-    return this.machineModel.findById(id).populate('user_id').exec();
+    return this.machineModel.findById(id);
   }
 
   async update(id: string, updateMachineDto: UpdateMachineDto) {
