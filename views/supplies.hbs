@@ -2,8 +2,8 @@
   {{#each data}}
     <tr>
       <td>{{name}}</td>
-      <td></td>
-      <td></td>
+      <td>{{formatDate batches.[0].date_of_entry}}</td>
+      <td>{{current_stock}}</td>
       <td>{{description}}</td>
     </tr>
   {{/each}}
