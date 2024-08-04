@@ -34,7 +34,7 @@ export class RecipesController {
     @Query()
     query: FindByDto,
   ) {
-    const recipe = await this.recipesService.findBy(query);
+    const recipe = await this.recipesService.findBy(query).populate(['author', 'supplies']);
     if (!recipe) {
       throw new NotFoundException('Receta no encontrada');
     }

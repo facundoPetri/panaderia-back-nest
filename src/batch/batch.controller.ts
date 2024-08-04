@@ -22,7 +22,7 @@ export class BatchController {
 
   @Post()
   async create(@Body() createBatchDto: CreateBatchDto) {
-    const supply = await this.suppliesService.findOne(createBatchDto.supplyId);
+    const supply = await this.suppliesService.findOne(createBatchDto.supply_id);
     if (!supply) {
       throw new Error('insumo no encontrado');
     }

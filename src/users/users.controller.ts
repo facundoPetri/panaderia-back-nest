@@ -16,6 +16,8 @@ import { ParseObjectIdPipe } from '../pipes/parse-object-id-pipe.pipe';
 import { SignUpDto } from 'src/auth/dto/sign-up.dto';
 import { generatePdf } from '../../helpers/handlebars';
 import { PdfService } from 'src/pdf/pdf.service';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { User } from './schemas/user.schema';
 
 @Controller('users')
 export class UsersController {
@@ -37,12 +39,12 @@ export class UsersController {
   @Get('generate-pdf')
   @Header('Content-Type', 'application/pdf')
   @Header('Content-Disposition', 'attachment; filename="users.pdf"')
-  async generatePdf(@Res() res: Response): Promise<void> {
+  async generatePdf(@Res() res: Response, @CurrentUser() user: User): Promise<void> {
     const users = await this.usersService.findAll();
 
     const html = generatePdf({
       title: 'Lista de Usuarios',
-      user: 'John Doe',
+      user: user.fullname,
       data: users,
       headers: [
         'Nombre Completo',
