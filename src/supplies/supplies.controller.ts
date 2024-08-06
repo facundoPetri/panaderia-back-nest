@@ -17,7 +17,6 @@ import { PdfService } from 'src/pdf/pdf.service';
 import { generatePdf } from '../../helpers/handlebars';
 import { CurrentUser } from 'src/users/decorators/current-user.decorator';
 import { User } from 'src/users/schemas/user.schema';
-import { Public } from 'src/auth/decorators/public.decorator';
 @Controller('supplies')
 export class SuppliesController {
   constructor(

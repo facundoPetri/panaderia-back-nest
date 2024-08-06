@@ -25,7 +25,7 @@ export class Recipe {
   @Prop({ default: true })
   state: boolean;
 
-  @Prop()
+  @Prop({ default: 0 })
   uses: number;
 
   @Prop()
