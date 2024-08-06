@@ -17,7 +17,7 @@ export class RecipesService {
   }
 
   findAll() {
-    return this.recipeModel.find().populate(['supplies', 'author']).exec();
+    return this.recipeModel.find().populate(['supplies', 'author']).lean().exec();
   }
 
   findOne(id: string) {
@@ -40,6 +40,7 @@ export class RecipesService {
       throw new NotFoundException('Recipe not found');
     }
     Object.assign(recipe, updateRecipeDto);
+    recipe.updatedAt = new Date();
     return recipe.save();
   }
 
