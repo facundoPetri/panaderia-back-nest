@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { SupplyDocument } from 'src/supplies/schemas/supply.schema';
 
 export type BatchDocument = HydratedDocument<Batch>;
 
@@ -23,8 +24,8 @@ export class Batch {
   @Prop()
   column: number;
 
-  @Prop()
-  supply_id: string;
+  @Prop({ type: 'ObjectId', ref: 'Supply' })
+  supply_id: SupplyDocument;
 }
 
 export const BatchSchema = SchemaFactory.createForClass(Batch);
