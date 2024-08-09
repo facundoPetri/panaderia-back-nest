@@ -39,7 +39,7 @@ export class RecipesController {
     const recipes = await this.recipesService.findAll();
 
     const html = generatePdf({
-      title: 'Listado de Insumos',
+      title: 'Listado de Recetas',
       user: user.fullname,
       data: recipes,
       headers: [

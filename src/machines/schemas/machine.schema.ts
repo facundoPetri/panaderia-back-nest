@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { User } from 'src/users/schemas/user.schema';
+import { MaintenanceDocument } from 'src/maintenance/schemas/maintenance.schema';
 
 export type MachineDocument = HydratedDocument<Machine>;
 
@@ -16,16 +16,13 @@ export class Machine {
   purcharse_date: Date;
 
   @Prop()
-  last_maintenance_date: string;
-
-  @Prop()
   desired_maintenance: number;
 
-  @Prop()
-  createdAt: Date;
+  @Prop([{ type: 'ObjectId', ref: 'Maintenance' }])
+  maintenance: MaintenanceDocument[];
 
-  @Prop()
-  updatedAt: Date;
+  @Prop({ default: Date.now })
+  createdAt: Date;
 }
 
 export const MachineSchema = SchemaFactory.createForClass(Machine);

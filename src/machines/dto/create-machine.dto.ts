@@ -3,9 +3,7 @@ import {
   IsNotEmpty,
   Length,
   IsNumber,
-  IsMongoId,
   IsDateString,
-  IsOptional,
 } from 'class-validator';
 
 export class CreateMachineDto {
@@ -24,11 +22,4 @@ export class CreateMachineDto {
 
   @IsNumber()
   desired_maintenance: number;
-
-  @IsMongoId()
-  user_id: string;
-
-  @IsDateString()
-  @IsOptional()
-  last_maintenance_date: string;
 }

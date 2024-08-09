@@ -3,7 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateMachineDto } from './dto/create-machine.dto';
 import { UpdateMachineDto } from './dto/update-machine.dto';
-import { Machine } from './schemas/machine.schema';
+import { Machine, MachineDocument } from './schemas/machine.schema';
+import { MaintenanceDocument } from 'src/maintenance/schemas/maintenance.schema';
 
 @Injectable()
 export class MachinesService {
@@ -16,12 +17,84 @@ export class MachinesService {
     return machine.save();
   }
 
-  findAll(): Promise<Machine[]> {
-    return this.machineModel.find();
+  async findAll(): Promise<Machine[]> {
+    const machines = await this.machineModel.aggregate([
+      {
+        $lookup: {
+          from: 'maintenances',
+          localField: '_id',
+          foreignField: 'machine',
+          as: 'maintenance',
+        },
+      },
+      {
+        $unwind: {
+          path: '$maintenance',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'maintenance.user',
+          foreignField: '_id',
+          as: 'maintenance.userDetails',
+        },
+      },
+      {
+        $unwind: {
+          path: '$maintenance.userDetails',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $group: {
+          _id: '$_id',
+          name: {
+            $first: '$name',
+          },
+          description: {
+            $first: '$description',
+          },
+          purcharse_date: {
+            $first: '$purcharse_date',
+          },
+          desired_maintenance: {
+            $first: '$desired_maintenance',
+          },
+          maintenance: {
+            $push: '$maintenance',
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          description: 1,
+          purcharse_date: 1,
+          desired_maintenance: 1,
+          maintenance: {
+            $sortArray: {
+              input: '$maintenance',
+              sortBy: {
+                date: -1,
+              },
+            },
+          },
+        },
+      },
+    ]);
+    return machines;
   }
 
   findOne(id: string) {
-    return this.machineModel.findById(id);
+    return this.machineModel.findById(id).populate('maintenance').exec();
+  }
+
+  addMaintenance(machine: MachineDocument, maintenance: MaintenanceDocument) {
+    machine.maintenance.push(maintenance);
+    return machine.save();
   }
 
   async update(id: string, updateMachineDto: UpdateMachineDto) {
