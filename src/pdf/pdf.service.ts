@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer';
 @Injectable()
 export class PdfService {
   async generate(html: string): Promise<Buffer> {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     const page = await browser.newPage();
     await page.setContent(html);
 
