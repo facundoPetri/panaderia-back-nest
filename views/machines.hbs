@@ -1,12 +1,17 @@
 <tbody>
   {{#each data}}
     <tr>
-      <td>prioridad</td>
       <td>{{name}}</td>
-      <td>{{maintenance.[0].userDetails.fullname}}</td>
       <td>{{formatDate purcharse_date}}</td>
       <td>{{formatDate maintenance.[0].date}}</td>
-      <td>{{desired_maintenance}}</td>
+      <td>{{desired_maintenance}} días</td>
+      <td>
+        {{#if require_maintenance}}
+          <span>Sí</span>
+        {{else}}
+          <span>No</span>
+        {{/if}}
+      </td>
     </tr>
   {{/each}}
 </tbody>

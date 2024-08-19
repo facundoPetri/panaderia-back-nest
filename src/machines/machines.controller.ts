@@ -33,18 +33,18 @@ export class MachinesController {
   @Header('Content-Disposition', 'attachment; filename="machines.pdf"')
   async generatePdf(@Res() res: Response, @CurrentUser() user: User): Promise<void> {
     const machines = await this.machinesService.findAll();
+    console.log("🚀 ~ machines:", machines)
 
     const html = generatePdf({
       title: 'Gestión y Mantenimiento de maquinaria',
       user: user.fullname,
       data: machines,
       headers: [
-        'Prioridad',
         'Nombre',
-        'Usuario',
         'Fecha de adquisición',
         'Fecha del último mantenimiento',
-        'Mantenimiento deseado'
+        'Mantenimiento deseado',
+        '¿Se requiere mantenimiento?',
       ],
       tableTemplate: 'machines',
     });

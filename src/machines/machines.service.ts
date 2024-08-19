@@ -5,6 +5,7 @@ import { CreateMachineDto } from './dto/create-machine.dto';
 import { UpdateMachineDto } from './dto/update-machine.dto';
 import { Machine, MachineDocument } from './schemas/machine.schema';
 import { MaintenanceDocument } from 'src/maintenance/schemas/maintenance.schema';
+import { getDaysDifference } from '../../helpers/utils';
 
 @Injectable()
 export class MachinesService {
@@ -85,6 +86,15 @@ export class MachinesService {
         },
       },
     ]);
+
+    machines.forEach((machine) => {
+      const diff = getDaysDifference(
+        new Date(machine.maintenance[0].date || machine.purcharse_date),
+        new Date(),
+      );
+      machine.require_maintenance = diff > machine.desired_maintenance;
+    });
+
     return machines;
   }
 
