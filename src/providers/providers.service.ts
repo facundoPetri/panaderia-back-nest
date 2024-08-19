@@ -16,8 +16,8 @@ export class ProvidersService {
     return provider.save();
   }
 
-  findAll() {
-    return this.providerModel.find().populate('supplies').exec();
+  findAll(): Promise<Provider[]> {
+    return this.providerModel.find().populate('supplies').lean().exec();
   }
 
   findOne(id: string) {
