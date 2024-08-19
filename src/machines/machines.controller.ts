@@ -39,12 +39,11 @@ export class MachinesController {
       user: user.fullname,
       data: machines,
       headers: [
-        'Prioridad',
         'Nombre',
-        'Usuario',
         'Fecha de adquisición',
         'Fecha del último mantenimiento',
-        'Mantenimiento deseado'
+        'Mantenimiento deseado',
+        '¿Se requiere mantenimiento?',
       ],
       tableTemplate: 'machines',
     });

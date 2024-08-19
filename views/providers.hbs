@@ -1,0 +1,19 @@
+<tbody>
+  {{#each data}}
+    <tr>
+      <td>{{name}}</td>
+      <td>{{phone}}</td>
+      <td>{{email}}</td>
+      <td>
+        {{#each supplies}}
+          {{#if @first}}
+            {{this.name}}
+          {{else}}
+            ,
+            {{this.name}}
+          {{/if}}
+        {{/each}}
+      </td>
+    </tr>
+  {{/each}}
+</tbody>

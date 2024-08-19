@@ -18,11 +18,11 @@ export class MaintenanceService {
   }
 
   findAll(): Promise<Maintenance[]> {
-    return this.maintenanceModel.find();
+    return this.maintenanceModel.find().populate(['user', 'machine']).exec();
   }
 
   findOne(id: string) {
-    return this.maintenanceModel.findById(id);
+    return this.maintenanceModel.findById(id).populate(['user', 'machine']).exec();
   }
 
   async update(id: string, updateMaintenanceDto: UpdateMaintenanceDto) {
