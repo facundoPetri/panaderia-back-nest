@@ -14,6 +14,7 @@ import { PdfService } from './pdf/pdf.service';
 import { BatchModule } from './batch/batch.module';
 import { MaintenanceModule } from './maintenance/maintenance.module';
 import { OrdersModule } from './orders/orders.module';
+import { SuppliesUsageModule } from './supplies-usage/supplies-usage.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { OrdersModule } from './orders/orders.module';
     BatchModule,
     MaintenanceModule,
     OrdersModule,
+    SuppliesUsageModule,
   ],
   providers: [PdfService],
 })
