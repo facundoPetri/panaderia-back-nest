@@ -1,0 +1,13 @@
+<tbody>
+  {{#each data}}
+    {{#if supply_id}}
+      <tr>
+        <td>{{formatDate expiration_date}}</td>
+        <td>{{supply_id.name}}</td>
+        <td>?</td>
+        <td>Fila: {{row}} Columna: {{column}}</td>
+        <td>{{quantity}} {{supply_id.unit}}</td>
+      </tr>
+    {{/if}}
+  {{/each}}
+</tbody>
