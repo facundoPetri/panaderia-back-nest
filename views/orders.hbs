@@ -1,0 +1,19 @@
+<tbody>
+  {{#each data}}
+    <tr>
+      <td>{{number}}</td>
+      <td>{{date}}</td>
+      <td>{{provider.name}}</td>
+      <td>
+        {{#each supplies}}
+          {{#if @first}}
+            {{this.name}}
+          {{else}}
+            ,
+            {{this.name}}
+          {{/if}}
+        {{/each}}
+      </td>
+    </tr>
+  {{/each}}
+</tbody>

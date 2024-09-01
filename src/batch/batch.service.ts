@@ -17,7 +17,7 @@ export class BatchService {
   }
 
   findAll() {
-    return this.batchModel.find().populate('supply_id').exec();
+    return this.batchModel.find().populate('supply_id').lean().exec();
   }
 
   findOne(id: string) {

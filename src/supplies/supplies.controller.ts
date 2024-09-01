@@ -32,7 +32,10 @@ export class SuppliesController {
   @Get('generate-pdf')
   @Header('Content-Type', 'application/pdf')
   @Header('Content-Disposition', 'attachment; filename="supplies.pdf"')
-  async generatePdf(@Res() res: Response, @CurrentUser() user: User): Promise<void> {
+  async generatePdf(
+    @Res() res: Response,
+    @CurrentUser() user: User,
+  ): Promise<void> {
     const supplies = await this.suppliesService.findAll();
 
     const html = generatePdf({
