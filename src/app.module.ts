@@ -21,9 +21,16 @@ import { SuppliesUsageModule } from './supplies-usage/supplies-usage.module';
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('DATABASE_URI'),
-      }),
+      useFactory: (configService: ConfigService) => {
+        const env = configService.get<string>('NODE_ENV');
+        const dbUri =
+          env === 'local'
+            ? configService.get<string>('DATABASE_URI')
+            : configService.get<string>('DATABASE_URI_LOCAL');
+        return {
+          uri: dbUri,
+        };
+      },
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '..', 'public'),
