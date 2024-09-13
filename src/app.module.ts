@@ -25,8 +25,8 @@ import { SuppliesUsageModule } from './supplies-usage/supplies-usage.module';
         const env = configService.get<string>('NODE_ENV');
         const dbUri =
           env === 'local'
-            ? configService.get<string>('DATABASE_URI')
-            : configService.get<string>('DATABASE_URI_LOCAL');
+            ? configService.get<string>('DATABASE_URI_LOCAL')
+            : configService.get<string>('DATABASE_URI');
         return {
           uri: dbUri,
         };
