@@ -16,6 +16,7 @@ import { MaintenanceModule } from './maintenance/maintenance.module';
 import { OrdersModule } from './orders/orders.module';
 import { SuppliesUsageModule } from './supplies-usage/supplies-usage.module';
 import { WasteModule } from './waste/waste.module';
+import { ProductionModule } from './production/production.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { WasteModule } from './waste/waste.module';
     OrdersModule,
     SuppliesUsageModule,
     WasteModule,
+    ProductionModule,
   ],
   providers: [PdfService],
 })
