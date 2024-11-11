@@ -1,9 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { SuppliesUsageService } from './supplies-usage.service';
 import { CreateSuppliesUsageDto } from './dto/create-supplies-usage.dto';
 import { UpdateSuppliesUsageDto } from './dto/update-supplies-usage.dto';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id-pipe.pipe';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('supplies-usage')
 export class SuppliesUsageController {
   constructor(private readonly suppliesUsageService: SuppliesUsageService) {}
@@ -24,7 +34,10 @@ export class SuppliesUsageController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseObjectIdPipe) id: string, @Body() updateSuppliesUsageDto: UpdateSuppliesUsageDto) {
+  update(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() updateSuppliesUsageDto: UpdateSuppliesUsageDto,
+  ) {
     return this.suppliesUsageService.update(id, updateSuppliesUsageDto);
   }
 

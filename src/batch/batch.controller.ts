@@ -19,7 +19,15 @@ import { User } from 'src/users/schemas/user.schema';
 import { generatePdf } from 'helpers/handlebars';
 import { Response } from 'express';
 import { PdfService } from 'src/pdf/pdf.service';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('batch')
 @Controller('batch')
 export class BatchController {
   constructor(
@@ -29,6 +37,12 @@ export class BatchController {
   ) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new batch' })
+  @ApiResponse({
+    status: 201,
+    description: 'The batch has been successfully created.',
+  })
+  @ApiResponse({ status: 404, description: 'Supply not found.' })
   async create(@Body() createBatchDto: CreateBatchDto) {
     const supply = await this.suppliesService.findOne(createBatchDto.supply_id);
     if (!supply) {
@@ -42,12 +56,13 @@ export class BatchController {
   @Get('generate-pdf')
   @Header('Content-Type', 'application/pdf')
   @Header('Content-Disposition', 'attachment; filename="supplies.pdf"')
+  @ApiOperation({ summary: 'Generate a PDF of all batches' })
+  @ApiResponse({ status: 200, description: 'PDF generated successfully.' })
   async generatePdf(
     @Res() res: Response,
     @CurrentUser() user: User,
   ): Promise<void> {
     const batches = await this.batchService.findAll();
-    console.log("🚀 ~ batches:", batches)
 
     const html = generatePdf({
       title: 'Listado de insumos con vencimiento próximo',
@@ -76,16 +91,27 @@ export class BatchController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all batches' })
+  @ApiResponse({ status: 200, description: 'Return all batches.' })
   findAll() {
     return this.batchService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a batch by ID' })
+  @ApiResponse({ status: 200, description: 'Return the batch.' })
+  @ApiResponse({ status: 404, description: 'Batch not found.' })
   findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.batchService.findOne(id);
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update a batch by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The batch has been successfully updated.',
+  })
+  @ApiResponse({ status: 404, description: 'Batch not found.' })
   update(
     @Param('id', ParseObjectIdPipe) id: string,
     @Body() updateBatchDto: UpdateBatchDto,
@@ -94,6 +120,12 @@ export class BatchController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a batch by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The batch has been successfully deleted.',
+  })
+  @ApiResponse({ status: 404, description: 'Batch not found.' })
   remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.batchService.remove(id);
   }
