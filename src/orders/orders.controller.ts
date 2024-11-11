@@ -18,7 +18,9 @@ import { CurrentUser } from 'src/users/decorators/current-user.decorator';
 import { User } from 'src/users/schemas/user.schema';
 import { generatePdf } from 'helpers/handlebars';
 import { PdfService } from 'src/pdf/pdf.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('orders')
 export class OrdersController {
   constructor(

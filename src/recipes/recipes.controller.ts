@@ -21,7 +21,9 @@ import { User } from 'src/users/schemas/user.schema';
 import { generatePdf } from 'helpers/handlebars';
 import { Response } from 'express';
 import { PdfService } from 'src/pdf/pdf.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('recipes')
 export class RecipesController {
   constructor(

@@ -1,9 +1,19 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { WasteService } from './waste.service';
 import { CreateWasteDto } from './dto/create-waste.dto';
 import { UpdateWasteDto } from './dto/update-waste.dto';
 import { ParseObjectIdPipe } from 'src/pipes/parse-object-id-pipe.pipe';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('waste')
 export class WasteController {
   constructor(private readonly wasteService: WasteService) {}
@@ -24,7 +34,10 @@ export class WasteController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseObjectIdPipe) id: string, @Body() updateWasteDto: UpdateWasteDto) {
+  update(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() updateWasteDto: UpdateWasteDto,
+  ) {
     return this.wasteService.update(id, updateWasteDto);
   }
 

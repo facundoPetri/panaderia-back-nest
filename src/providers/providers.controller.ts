@@ -18,7 +18,9 @@ import { CurrentUser } from 'src/users/decorators/current-user.decorator';
 import { generatePdf } from 'helpers/handlebars';
 import { Response } from 'express';
 import { PdfService } from 'src/pdf/pdf.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('providers')
 export class ProvidersController {
   constructor(

@@ -15,7 +15,9 @@ import { ParseObjectIdPipe } from '../pipes/parse-object-id-pipe.pipe';
 import { MachinesService } from '../machines/machines.service';
 import { CurrentUser } from '../users/decorators/current-user.decorator';
 import { User } from '../users/schemas/user.schema';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('maintenance')
 export class MaintenanceController {
   constructor(

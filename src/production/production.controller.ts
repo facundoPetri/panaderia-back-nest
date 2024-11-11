@@ -1,8 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ProductionService } from './production.service';
 import { CreateProductionDto } from './dto/create-production.dto';
 import { UpdateProductionDto } from './dto/update-production.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('production')
 export class ProductionController {
   constructor(private readonly productionService: ProductionService) {}
@@ -23,7 +33,10 @@ export class ProductionController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductionDto: UpdateProductionDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateProductionDto: UpdateProductionDto,
+  ) {
     return this.productionService.update(id, updateProductionDto);
   }
 
