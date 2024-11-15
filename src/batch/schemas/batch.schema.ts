@@ -15,7 +15,7 @@ export class Batch {
   @Prop()
   quantity: number;
 
-  @Prop()
+  @Prop({ unique: true, default: 1 })
   batch_number: number;
 
   @Prop()
@@ -29,3 +29,16 @@ export class Batch {
 }
 
 export const BatchSchema = SchemaFactory.createForClass(Batch);
+
+BatchSchema.statics.getNextBatchNumber = async function () {
+  const lastBatch = await this.findOne().sort('-batch_number');
+  return lastBatch ? lastBatch.batch_number + 1 : 1;
+};
+
+BatchSchema.pre('save', async function (next) {
+  if (this.isNew) {
+    const doc = this as BatchDocument;
+    doc.batch_number = await (this.constructor as any).getNextBatchNumber();
+  }
+  next();
+});

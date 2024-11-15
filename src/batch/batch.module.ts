@@ -13,5 +13,6 @@ import { PdfService } from 'src/pdf/pdf.service';
   ],
   controllers: [BatchController],
   providers: [BatchService, PdfService],
+  exports: [BatchService],
 })
 export class BatchModule {}
