@@ -4,20 +4,42 @@ import { UpdateSuppliesUsageDto } from './dto/update-supplies-usage.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { SuppliesUsage } from './schemas/supplies-usage.schema';
+import { BatchService } from 'src/batch/batch.service';
 
 @Injectable()
 export class SuppliesUsageService {
   constructor(
     @InjectModel(SuppliesUsage.name)
-    private supplyUsageModel: Model<SuppliesUsage>,
+    private readonly supplyUsageModel: Model<SuppliesUsage>,
+    private readonly batchService: BatchService,
   ) {}
 
-  create(createSuppliesUsageDto: CreateSuppliesUsageDto) {
-    const supplyUsage = new this.supplyUsageModel(createSuppliesUsageDto);
-    return supplyUsage.save();
+  create(createSuppliesUsageDtos: CreateSuppliesUsageDto[]) {
+    const supplyUsages = createSuppliesUsageDtos.map(
+      (dto) => new this.supplyUsageModel(dto),
+    );
+
+    createSuppliesUsageDtos.forEach((dto) => {
+      this.batchService.updateBatchQuantities(dto.supply, dto.quantity);
+    });
+
+    return this.supplyUsageModel.insertMany(supplyUsages);
   }
 
-  findAll() {
+  findAll(days: string) {
+    const daysNumber = parseInt(days, 10);
+    const adjustedDate = new Date();
+    adjustedDate.setDate(adjustedDate.getDate() - daysNumber);
+
+    if (days) {
+      return this.supplyUsageModel
+        .find({
+          date_used: {
+            $gte: adjustedDate,
+          },
+        })
+        .populate('supply');
+    }
     return this.supplyUsageModel.find().populate('supply');
   }
 

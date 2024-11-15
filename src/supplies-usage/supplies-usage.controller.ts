@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { SuppliesUsageService } from './supplies-usage.service';
 import { CreateSuppliesUsageDto } from './dto/create-supplies-usage.dto';
@@ -19,13 +20,13 @@ export class SuppliesUsageController {
   constructor(private readonly suppliesUsageService: SuppliesUsageService) {}
 
   @Post()
-  create(@Body() createSuppliesUsageDto: CreateSuppliesUsageDto) {
-    return this.suppliesUsageService.create(createSuppliesUsageDto);
+  create(@Body() createSuppliesUsageDtos: CreateSuppliesUsageDto[]) {
+    return this.suppliesUsageService.create(createSuppliesUsageDtos);
   }
 
   @Get()
-  findAll() {
-    return this.suppliesUsageService.findAll();
+  findAll(@Query('filterDays') days?: string) {
+    return this.suppliesUsageService.findAll(days);
   }
 
   @Get(':id')
