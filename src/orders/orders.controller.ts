@@ -8,6 +8,8 @@ import {
   Delete,
   Header,
   Res,
+  BadRequestException,
+  Query,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -18,9 +20,18 @@ import { CurrentUser } from 'src/users/decorators/current-user.decorator';
 import { User } from 'src/users/schemas/user.schema';
 import { generatePdf } from 'helpers/handlebars';
 import { PdfService } from 'src/pdf/pdf.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiQuery,
+} from '@nestjs/swagger';
+import { UpdateStateOrderDto } from './dto/update-status-order.dto';
+import { OrderState } from './schemas/orders.schema';
 
 @ApiBearerAuth()
+@ApiTags('orders')
 @Controller('orders')
 export class OrdersController {
   constructor(
@@ -29,6 +40,8 @@ export class OrdersController {
   ) {}
 
   @Post()
+  @ApiOperation({ summary: 'Create a new order' })
+  @ApiResponse({ status: 201, description: 'Order created successfully.' })
   create(@Body() createOrderDto: CreateOrderDto) {
     return this.ordersService.create(createOrderDto);
   }
@@ -36,12 +49,13 @@ export class OrdersController {
   @Get('generate-pdf')
   @Header('Content-Type', 'application/pdf')
   @Header('Content-Disposition', 'attachment; filename="supplies.pdf"')
+  @ApiOperation({ summary: 'Generate PDF of all orders' })
+  @ApiResponse({ status: 200, description: 'PDF generated successfully.' })
   async generatePdf(
     @Res() res: Response,
     @CurrentUser() user: User,
   ): Promise<void> {
     const orders = await this.ordersService.findAll();
-
     const html = generatePdf({
       title: 'Listado de pedidos a proveedores',
       user: user.fullname,
@@ -56,28 +70,43 @@ export class OrdersController {
     });
 
     const buffer = await this.pdfService.generate(html);
-
     res.set({
       'Content-Length': buffer.length,
       'Cache-Control': 'no-cache, no-store, must-revalidate',
       Pragma: 'no-cache',
       Expires: 0,
     });
-
     res.end(buffer);
   }
 
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  @ApiOperation({ summary: 'Get all orders with optional state filter' })
+  @ApiQuery({
+    name: 'state',
+    required: false,
+    enum: OrderState,
+    description: 'Filter orders by state (optional)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns all orders, optionally filtered by state',
+  })
+  findAll(@Query('state') state?: OrderState) {
+    return this.ordersService.findAll(state);
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get order by ID' })
+  @ApiResponse({ status: 200, description: 'Return the order.' })
+  @ApiResponse({ status: 404, description: 'Order not found.' })
   findOne(@Param('id', ParseObjectIdPipe) id: string) {
     return this.ordersService.findOne(id);
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update order by ID' })
+  @ApiResponse({ status: 200, description: 'Order updated successfully.' })
+  @ApiResponse({ status: 404, description: 'Order not found.' })
   update(
     @Param('id', ParseObjectIdPipe) id: string,
     @Body() updateOrderDto: UpdateOrderDto,
@@ -85,7 +114,32 @@ export class OrdersController {
     return this.ordersService.update(id, updateOrderDto);
   }
 
+  @Post(':id')
+  @ApiOperation({ summary: 'Update order status' })
+  @ApiResponse({
+    status: 200,
+    description: 'Order status updated successfully.',
+  })
+  @ApiResponse({ status: 404, description: 'Order not found.' })
+  async updateStatus(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @Body() updateStateOrderDto: UpdateStateOrderDto,
+  ) {
+    const updatedOrder = await this.ordersService.updateState(
+      id,
+      updateStateOrderDto.state,
+      updateStateOrderDto.cancelled_description,
+    );
+
+    if (!updatedOrder) throw new BadRequestException('Order not found');
+
+    return updatedOrder;
+  }
+
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete order by ID' })
+  @ApiResponse({ status: 200, description: 'Order deleted successfully.' })
+  @ApiResponse({ status: 404, description: 'Order not found.' })
   remove(@Param('id', ParseObjectIdPipe) id: string) {
     return this.ordersService.remove(id);
   }

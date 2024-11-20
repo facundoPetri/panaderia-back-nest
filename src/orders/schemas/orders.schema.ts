@@ -5,13 +5,20 @@ import { SupplyDocument } from 'src/supplies/schemas/supply.schema';
 
 export type OrderDocument = HydratedDocument<Order>;
 
+export enum OrderState {
+  CREATED = 'Creado',
+  PENDING = 'Pendiente',
+  COMPLETED = 'Completado',
+  CANCELLED = 'Cancelado',
+}
+
 @Schema()
 export class Order {
   @Prop()
   number: number;
 
   @Prop()
-  date: Date;
+  received_date: Date;
 
   @Prop()
   created_at: Date;
@@ -21,6 +28,12 @@ export class Order {
 
   @Prop([{ type: 'ObjectId', ref: 'Supply' }])
   supplies: SupplyDocument[];
+
+  @Prop({ enum: OrderState, default: OrderState.CREATED })
+  state: OrderState;
+
+  @Prop()
+  cancelled_description: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

@@ -11,9 +11,6 @@ export class CreateBatchDto {
   quantity: number;
 
   @IsNumber()
-  batch_number: number;
-
-  @IsNumber()
   row: number;
 
   @IsNumber()

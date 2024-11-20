@@ -26,9 +26,9 @@ export class CreateProviderDto {
   @IsMongoId({ each: true })
   supplies: string[];
 
-  @IsUrl()
   @IsOptional()
-  image: string;
+  @IsUrl()
+  image?: string;
 
   @IsString()
   @IsOptional()
