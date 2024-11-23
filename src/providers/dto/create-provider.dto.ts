@@ -3,7 +3,6 @@ import {
   IsNotEmpty,
   IsOptional,
   IsEmail,
-  IsUrl,
   Length,
   IsMongoId,
 } from 'class-validator';
@@ -27,7 +26,7 @@ export class CreateProviderDto {
   supplies: string[];
 
   @IsOptional()
-  @IsUrl()
+  @IsString()
   image?: string;
 
   @IsString()
