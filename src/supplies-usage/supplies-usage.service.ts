@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateSuppliesUsageDto } from './dto/create-supplies-usage.dto';
 import { UpdateSuppliesUsageDto } from './dto/update-supplies-usage.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -14,14 +18,12 @@ export class SuppliesUsageService {
     private readonly batchService: BatchService,
   ) {}
 
-  create(createSuppliesUsageDtos: CreateSuppliesUsageDto[]) {
+  async create(createSuppliesUsageDtos: CreateSuppliesUsageDto[]) {
     const supplyUsages = createSuppliesUsageDtos.map(
       (dto) => new this.supplyUsageModel(dto),
     );
 
-    createSuppliesUsageDtos.forEach((dto) => {
-      this.batchService.updateBatchQuantities(dto.supply, dto.quantity);
-    });
+    await this.batchService.updateBatchQuantities(createSuppliesUsageDtos);
 
     return this.supplyUsageModel.insertMany(supplyUsages);
   }

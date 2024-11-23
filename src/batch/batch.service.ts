@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateBatchDto } from './dto/create-batch.dto';
 import { UpdateBatchDto } from './dto/update-batch.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Batch } from './schemas/batch.schema';
 import { Model } from 'mongoose';
+import { CreateSuppliesUsageDto } from 'src/supplies-usage/dto/create-supplies-usage.dto';
 
 @Injectable()
 export class BatchService {
@@ -21,25 +26,43 @@ export class BatchService {
     return this.batchModel.insertMany(batches);
   }
 
-  async updateBatchQuantities(supplyId: string, quantityToSubtract: number) {
-    const batches = await this.batchModel
-      .find({ supply_id: supplyId, quantity: { $gt: 0 } })
-      .sort({ expiration_date: 1 })
-      .exec();
+  async updateBatchQuantities(suppliesUsages: CreateSuppliesUsageDto[]) {
+    for (const supplyUsage of suppliesUsages) {
+      const { supply, quantity } = supplyUsage;
 
-    let remainingQuantity = quantityToSubtract;
+      const batches = await this.batchModel
+        .find({ supply_id: supply, quantity: { $gt: 0 } })
+        .sort({ expiration_date: 1 })
+        .exec();
 
-    for (const batch of batches) {
-      if (remainingQuantity <= 0) break;
+      const totalQuantity = batches.reduce(
+        (acc, batch) => acc + batch.quantity,
+        0,
+      );
 
-      const subtractAmount = Math.min(batch.quantity, remainingQuantity);
-      batch.quantity -= subtractAmount;
-      remainingQuantity -= subtractAmount;
-      await batch.save();
+      if (quantity > totalQuantity) {
+        throw new BadRequestException('Not enough stock');
+      }
     }
 
-    if (remainingQuantity > 0) {
-      throw new NotFoundException('Not enough quantity in batches');
+    for (const supplyUsage of suppliesUsages) {
+      const { supply, quantity } = supplyUsage;
+
+      const batches = await this.batchModel
+        .find({ supply_id: supply, quantity: { $gt: 0 } })
+        .sort({ expiration_date: 1 })
+        .exec();
+
+      let remainingQuantity = quantity;
+
+      for (const batch of batches) {
+        if (remainingQuantity <= 0) break;
+
+        const subtractAmount = Math.min(batch.quantity, remainingQuantity);
+        batch.quantity -= subtractAmount;
+        remainingQuantity -= subtractAmount;
+        await batch.save();
+      }
     }
   }
 

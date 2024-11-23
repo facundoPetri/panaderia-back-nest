@@ -7,7 +7,9 @@ import { BatchDocument } from '../batch/schemas/batch.schema';
 
 @Injectable()
 export class SuppliesService {
-  constructor(@InjectModel(Supply.name) private supplyModel: Model<Supply>) {}
+  constructor(
+    @InjectModel(Supply.name) private readonly supplyModel: Model<Supply>,
+  ) {}
 
   create(createSupplyDto: CreateSupplyDto) {
     const supply = new this.supplyModel(createSupplyDto);
@@ -22,9 +24,7 @@ export class SuppliesService {
           localField: '_id',
           foreignField: 'supply_id',
           as: 'batches',
-          pipeline:[
-            { $sort: { date_of_entry: -1 } }
-          ]
+          pipeline: [{ $sort: { date_of_entry: -1 } }],
         },
       },
       {
