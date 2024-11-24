@@ -39,6 +39,10 @@ export class SuppliesService {
     return this.supplyModel.populate(supplies, { path: 'usedIn' });
   }
 
+  async findSupplies(ids: string[]) {
+    return this.supplyModel.find({ _id: { $in: ids } });
+  }
+
   findOne(id: string) {
     if (!id) {
       return null;
