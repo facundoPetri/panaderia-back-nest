@@ -1,12 +1,34 @@
+// create-waste.dto.ts
 import {
   IsString,
   IsMongoId,
-  IsDate,
+  IsNumber,
   IsOptional,
   IsDateString,
-  IsNumber,
+  ValidateNested,
+  ArrayMinSize,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Transform, Type } from 'class-transformer';
+
+export class SupplyQuantityDto {
+  @ApiProperty({
+    description: 'Supply ID',
+    example: '507f1f77bcf86cd799439011',
+    type: String,
+  })
+  @IsMongoId()
+  supplyId: string;
+
+  @ApiProperty({
+    description: 'Quantity of waste for this supply',
+    example: 5,
+    type: Number,
+    minimum: 1,
+  })
+  @IsNumber()
+  quantity: number;
+}
 
 export class CreateWasteDto {
   @ApiProperty({
@@ -18,13 +40,19 @@ export class CreateWasteDto {
   motive: string;
 
   @ApiProperty({
-    description: 'Array of supply IDs involved in waste',
-    example: ['507f1f77bcf86cd799439011', '507f1f77bcf86cd799439012'],
-    type: [String],
-    isArray: true,
+    description: 'Array of supplies and their quantities',
+    type: [SupplyQuantityDto],
+    example: [
+      {
+        supply: '507f1f77bcf86cd799439011',
+        quantity: 5,
+      },
+    ],
   })
-  @IsMongoId({ each: true })
-  supplies: string[];
+  @ValidateNested({ each: true })
+  @ArrayMinSize(1)
+  @Type(() => SupplyQuantityDto)
+  supplies: SupplyQuantityDto[];
 
   @ApiPropertyOptional({
     description: 'ID of the person reporting the waste',
@@ -36,14 +64,14 @@ export class CreateWasteDto {
   reporter: string;
 
   @ApiPropertyOptional({
-    description: 'Array of IDs of people responsible for the waste',
-    example: ['507f1f77bcf86cd799439014', '507f1f77bcf86cd799439015'],
-    type: [String],
-    isArray: true,
+    description: 'ID of the person responsible for the waste',
+    example: '507f1f77bcf86cd799439014',
+    type: String,
   })
   @IsOptional()
-  @IsMongoId({ each: true })
-  responsible: string[];
+  @IsMongoId()
+  @Transform(({ value }) => (value === '' ? undefined : value))
+  responsible: string;
 
   @ApiProperty({
     description: 'Date when the waste occurred',
@@ -52,14 +80,4 @@ export class CreateWasteDto {
   })
   @IsDateString()
   date: Date;
-
-  @ApiProperty({
-    description: 'Quantity of waste',
-    example: 10,
-    type: Number,
-    minimum: 1,
-  })
-  @IsOptional()
-  @IsNumber()
-  quantity: number;
 }

@@ -18,7 +18,7 @@ export class WasteService {
 
   async create(createWasteDto: CreateWasteDto, user: User) {
     const supplies = await this.suppliesService.findSupplies(
-      createWasteDto.supplies,
+      createWasteDto.supplies.map((supply) => supply.supplyId),
     );
 
     if (supplies.length !== createWasteDto.supplies.length) {
@@ -28,13 +28,13 @@ export class WasteService {
     const waste = new this.wasteModel(createWasteDto);
     if (!waste.reporter) waste.reporter = user;
 
-    const bathToDecrease = createWasteDto.supplies.map((supply) => ({
-      supply,
-      quantity: createWasteDto.quantity ?? 1,
+    const batchToDecrease = createWasteDto.supplies.map((supply) => ({
+      supply: supply.supplyId,
+      quantity: supply.quantity ?? 1,
       date_used: createWasteDto.date,
     }));
 
-    await this.batchService.updateBatchQuantities(bathToDecrease);
+    await this.batchService.updateBatchQuantities(batchToDecrease);
 
     return waste.save();
   }
@@ -42,7 +42,21 @@ export class WasteService {
   findAll() {
     return this.wasteModel
       .find()
-      .populate(['supplies', 'reporter', 'responsible'])
+      .populate([
+        {
+          path: 'supplies.supplyId',
+          model: 'Supply',
+          select: 'name quantity',
+        },
+        {
+          path: 'reporter',
+          model: 'User',
+        },
+        {
+          path: 'responsible',
+          model: 'User',
+        },
+      ])
       .lean()
       .exec();
   }
@@ -53,7 +67,23 @@ export class WasteService {
     }
     return this.wasteModel
       .findOne({ _id: id })
-      .populate(['supplies', 'reporter', 'responsible'])
+      .populate([
+        {
+          path: 'supplies.supplyId',
+          model: 'Supply',
+          select: 'name quantity',
+        },
+        {
+          path: 'reporter',
+          model: 'User',
+          select: 'fullname email',
+        },
+        {
+          path: 'responsible',
+          model: 'User',
+          select: 'fullname email',
+        },
+      ])
       .exec();
   }
 
