@@ -12,12 +12,12 @@ export class CreateRecipeDto {
   @Length(3, 50)
   name: string;
 
+  @IsOptional()
   @IsString()
   steps: string;
 
   @IsOptional()
   @IsString()
-  @Length(3, 1000)
   recommendations: string;
 
   @IsOptional()
