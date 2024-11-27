@@ -38,10 +38,10 @@ export class OrdersService {
 
       updatedOrder.supplies.forEach(async (supply) => {
         await this.batchService.create({
-          supply_id: supply._id.toString(),
+          supply_id: supply.supplyId.toString(),
           date_of_entry: new Date(),
           expiration_date: null,
-          quantity: null,
+          quantity: supply.quantity,
           row: null,
           column: null,
         });
@@ -56,7 +56,17 @@ export class OrdersService {
 
     return this.orderModel
       .find(query)
-      .populate(['provider', 'supplies'])
+      .populate([
+        {
+          path: 'supplies.supplyId',
+          model: 'Supply',
+          select: 'name quantity',
+        },
+        {
+          path: 'provider',
+          model: 'Provider',
+        },
+      ])
       .exec();
   }
 
