@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -67,6 +71,9 @@ export class OrdersService {
     const order = await this.findOne(id);
     if (!order) {
       throw new NotFoundException('Order not found');
+    }
+    if (order.state !== OrderState.CREATED) {
+      throw new BadRequestException('Order cannot be updated');
     }
     Object.assign(order, updateOrderDto);
     return order.save();
