@@ -7,7 +7,7 @@ import { CreateBatchDto } from './dto/create-batch.dto';
 import { UpdateBatchDto } from './dto/update-batch.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Batch } from './schemas/batch.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateSuppliesUsageDto } from 'src/supplies-usage/dto/create-supplies-usage.dto';
 
 @Injectable()
@@ -24,6 +24,42 @@ export class BatchService {
   bulkCreate(createBatchDtos: CreateBatchDto[]) {
     const batches = createBatchDtos.map((dto) => new this.batchModel(dto));
     return this.batchModel.insertMany(batches);
+  }
+
+  async getAllStock(supplyId: string, quantity: number) {
+    const [allStock] = await this.batchModel
+      .aggregate([
+        {
+          $match: { supply_id: new Types.ObjectId(supplyId) },
+        },
+        {
+          $group: {
+            _id: '$supply_id',
+            totalQuantity: { $sum: '$quantity' },
+            batches: { $push: '$$ROOT' },
+          },
+        },
+        {
+          $lookup: {
+            from: 'supplies',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'supply',
+          },
+        },
+        {
+          $unwind: '$supply',
+        },
+      ])
+      .exec();
+
+    if (allStock.totalQuantity + quantity > allStock.supply.max_stock) {
+      throw new BadRequestException(
+        'Este pedido supera el stock máximo permitido para este producto',
+      );
+    }
+
+    return allStock;
   }
 
   async updateBatchQuantities(suppliesUsages: CreateSuppliesUsageDto[]) {

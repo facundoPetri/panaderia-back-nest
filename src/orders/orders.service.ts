@@ -28,27 +28,42 @@ export class OrdersService {
     state: OrderState,
     cancelled_description: string = '',
   ) {
-    const updatedOrder = await this.orderModel
-      .findByIdAndUpdate(id, { state, cancelled_description }, { new: true })
-      .exec();
+    const orderToUpdate = await this.orderModel
+      .findById(id)
+      .populate('supplies');
 
-    if (updatedOrder.state === OrderState.COMPLETED) {
-      updatedOrder.received_date = new Date();
-      await updatedOrder.save();
+    if (state === OrderState.COMPLETED) {
+      await Promise.all(
+        orderToUpdate.supplies.map((supply) =>
+          this.batchService.getAllStock(
+            supply.supplyId.toString(),
+            supply.quantity,
+          ),
+        ),
+      );
 
-      updatedOrder.supplies.forEach(async (supply) => {
-        await this.batchService.create({
-          supply_id: supply.supplyId.toString(),
-          date_of_entry: new Date(),
-          expiration_date: null,
-          quantity: supply.quantity,
-          row: null,
-          column: null,
-        });
-      });
+      await Promise.all(
+        orderToUpdate.supplies.map((supply) => {
+          this.batchService.create({
+            supply_id: supply.supplyId.toString(),
+            date_of_entry: new Date(),
+            expiration_date: null,
+            quantity: supply.quantity,
+            row: null,
+            column: null,
+          });
+        }),
+      );
+
+      orderToUpdate.received_date = new Date();
+      await orderToUpdate.save();
     }
 
-    return updatedOrder;
+    orderToUpdate.state = state;
+    orderToUpdate.cancelled_description = cancelled_description;
+    await orderToUpdate.save();
+
+    return orderToUpdate;
   }
 
   findAll(state?: OrderState) {
