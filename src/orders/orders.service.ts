@@ -56,6 +56,7 @@ export class OrdersService {
 
     return this.orderModel
       .find(query)
+      .sort({ number: -1 })
       .populate([
         {
           path: 'supplies.supplyId',

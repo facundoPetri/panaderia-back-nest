@@ -24,7 +24,7 @@ export class AuthService {
     const user = await this.usersService.findOneByEmail(email);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new BadRequestException('Credenciales inválidas');
     }
 
     const [salt, storedHash] = user.password.split('.');
@@ -32,7 +32,7 @@ export class AuthService {
     const hash = (await scrypt(password, salt, 32)) as Buffer;
 
     if (storedHash !== hash.toString('hex')) {
-      throw new BadRequestException('Invalid credentials');
+      throw new BadRequestException('Credenciales inválidas');
     }
 
     user.lastSession = new Date();
