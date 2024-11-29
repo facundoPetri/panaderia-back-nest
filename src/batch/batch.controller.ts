@@ -8,6 +8,7 @@ import {
   Delete,
   Header,
   Res,
+  Query,
 } from '@nestjs/common';
 import { BatchService } from './batch.service';
 import { CreateBatchDto } from './dto/create-batch.dto';
@@ -62,7 +63,7 @@ export class BatchController {
     @Res() res: Response,
     @CurrentUser() user: User,
   ): Promise<void> {
-    const batches = await this.batchService.findAll();
+    const batches = await this.batchService.findAll(false);
 
     const html = generatePdf({
       title: 'Listado de insumos con vencimiento próximo',
@@ -93,8 +94,11 @@ export class BatchController {
   @Get()
   @ApiOperation({ summary: 'Get all batches' })
   @ApiResponse({ status: 200, description: 'Return all batches.' })
-  findAll() {
-    return this.batchService.findAll();
+  findAll(
+    @Query('days') days: number,
+    @Query('expiring') expiring: boolean = false,
+  ) {
+    return this.batchService.findAll(expiring, +days);
   }
 
   @Get(':id')

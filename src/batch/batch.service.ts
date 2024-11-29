@@ -66,7 +66,25 @@ export class BatchService {
     }
   }
 
-  findAll() {
+  findAll(expiring: boolean, days = 7) {
+    if (expiring) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const limitDate = new Date();
+      limitDate.setDate(limitDate.getDate() + days);
+
+      return this.batchModel
+        .find({
+          expiration_date: {
+            $gte: today,
+            $lte: limitDate,
+          },
+        })
+        .sort({ expiration_date: 1 })
+        .populate('supply_id')
+        .lean()
+        .exec();
+    }
     return this.batchModel.find().populate('supply_id').lean().exec();
   }
 
