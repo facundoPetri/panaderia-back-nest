@@ -22,7 +22,7 @@ export class Provider {
   image: string;
 
   @Prop()
-  estimated_delivery_time: string;
+  estimated_delivery_time: number;
 
   @Prop({ default: Date.now })
   createdAt: Date;

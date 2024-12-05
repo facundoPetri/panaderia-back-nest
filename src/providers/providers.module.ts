@@ -13,5 +13,6 @@ import { PdfService } from 'src/pdf/pdf.service';
   ],
   controllers: [ProvidersController],
   providers: [ProvidersService, PdfService],
+  exports: [ProvidersService],
 })
 export class ProvidersModule {}

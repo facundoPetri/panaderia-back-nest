@@ -5,6 +5,7 @@ import {
   IsEmail,
   Length,
   IsMongoId,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateProviderDto {
@@ -29,7 +30,6 @@ export class CreateProviderDto {
   @IsString()
   image?: string;
 
-  @IsString()
-  @IsOptional()
-  estimated_delivery_time: string;
+  @IsNumber()
+  estimated_delivery_time: number;
 }
