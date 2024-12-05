@@ -80,19 +80,31 @@ export class OrdersController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all orders with optional state filter' })
+  @ApiOperation({
+    summary: 'Get all orders with optional state and reported filters',
+  })
   @ApiQuery({
     name: 'state',
     required: false,
     enum: OrderState,
     description: 'Filter orders by state (optional)',
   })
+  @ApiQuery({
+    name: 'reported',
+    required: false,
+    type: Boolean,
+    description: 'Filter orders by reported status (optional)',
+  })
   @ApiResponse({
     status: 200,
-    description: 'Returns all orders, optionally filtered by state',
+    description:
+      'Returns all orders, optionally filtered by state and reported status',
   })
-  findAll(@Query('state') state?: OrderState) {
-    return this.ordersService.findAll(state);
+  findAll(
+    @Query('state') state?: OrderState,
+    @Query('reported') reported = false,
+  ) {
+    return this.ordersService.findAll(state, reported);
   }
 
   @Get(':id')
