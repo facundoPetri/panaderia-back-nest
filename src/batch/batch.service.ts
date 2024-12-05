@@ -76,9 +76,8 @@ export class BatchService {
         0,
       );
 
-      if (quantity > totalQuantity) {
-        throw new BadRequestException('Not enough stock');
-      }
+      if (quantity > totalQuantity)
+        throw new BadRequestException('No hay suficiente stock');
     }
 
     for (const supplyUsage of suppliesUsages) {

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-import { MaintenanceDocument } from 'src/maintenance/schemas/maintenance.schema';
+import { Maintenance } from 'src/maintenance/schemas/maintenance.schema';
 
 export type MachineDocument = HydratedDocument<Machine>;
 
@@ -19,7 +19,7 @@ export class Machine {
   desired_maintenance: number;
 
   @Prop([{ type: 'ObjectId', ref: 'Maintenance' }])
-  maintenance: MaintenanceDocument[];
+  maintenance: Maintenance[];
 
   @Prop({ default: Date.now })
   createdAt: Date;
