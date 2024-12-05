@@ -13,5 +13,6 @@ import { BatchModule } from 'src/batch/batch.module';
   ],
   controllers: [OrdersController],
   providers: [OrdersService, PdfService],
+  exports: [OrdersService],
 })
 export class OrdersModule {}

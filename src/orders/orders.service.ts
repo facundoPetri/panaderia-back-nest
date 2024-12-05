@@ -6,7 +6,7 @@ import {
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Order, OrderState } from './schemas/orders.schema';
+import { Order, OrderDocument, OrderState } from './schemas/orders.schema';
 import { Model } from 'mongoose';
 import { BatchService } from '../batch/batch.service';
 
@@ -19,7 +19,6 @@ export class OrdersService {
 
   create(createOrderDto: CreateOrderDto) {
     const order = new this.orderModel(createOrderDto);
-    order.created_at = new Date();
     return order.save();
   }
 
@@ -66,8 +65,12 @@ export class OrdersService {
     return orderToUpdate;
   }
 
-  findAll(state?: OrderState) {
-    const query = state ? { state } : {};
+  findAll(state?: OrderState, reported = false) {
+    let query: any = {};
+
+    if (state) query.state = state;
+
+    if (reported) query.reported = reported;
 
     return this.orderModel
       .find(query)
@@ -86,7 +89,7 @@ export class OrdersService {
       .exec();
   }
 
-  findOne(id: string) {
+  findOne(id: string): Promise<OrderDocument> {
     return this.orderModel
       .findOne({ _id: id })
       .populate(['provider', 'supplies'])

@@ -25,7 +25,7 @@ export class Order {
   @Prop()
   received_date: Date;
 
-  @Prop()
+  @Prop({ default: Date.now })
   created_at: Date;
 
   @Prop([
@@ -44,6 +44,9 @@ export class Order {
 
   @Prop()
   cancelled_description: string;
+
+  @Prop({ default: false })
+  reported: boolean;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
