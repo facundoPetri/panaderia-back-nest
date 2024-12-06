@@ -5,19 +5,29 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Recipe } from './schemas/recipe.schema';
 import { Model } from 'mongoose';
 import { FindByDto } from './dto/find-by.dto';
+import { SuppliesService } from 'src/supplies/supplies.service';
 
 @Injectable()
 export class RecipesService {
-  constructor(@InjectModel(Recipe.name) private recipeModel: Model<Recipe>) {}
+  constructor(
+    @InjectModel(Recipe.name) private readonly recipeModel: Model<Recipe>,
+    private readonly suppliesService: SuppliesService,
+  ) {}
 
-  create(createRecipeDto: CreateRecipeDto, user: any) {
+  async create(createRecipeDto: CreateRecipeDto, user: any) {
     const recipe = new this.recipeModel(createRecipeDto);
     recipe.author = user._id;
+
+    await this.suppliesService.updateUsedIn(recipe, createRecipeDto.supplies);
     return recipe.save();
   }
 
   findAll() {
-    return this.recipeModel.find().populate(['supplies', 'author']).lean().exec();
+    return this.recipeModel
+      .find()
+      .populate(['supplies', 'author'])
+      .lean()
+      .exec();
   }
 
   findOne(id: string) {

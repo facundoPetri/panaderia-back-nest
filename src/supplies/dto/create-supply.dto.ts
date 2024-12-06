@@ -19,10 +19,6 @@ export class CreateSupplyDto {
   @Length(3, 1000)
   description: string;
 
-  @IsOptional()
-  @IsMongoId({ each: true })
-  usedIn: string[];
-
   @IsNotEmpty()
   @IsNumber()
   min_stock: number;

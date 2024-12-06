@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { CreateSupplyDto } from './dto/create-supply.dto';
 import { SupplyDocument, Supply } from './schemas/supply.schema';
 import { BatchDocument } from '../batch/schemas/batch.schema';
+import { RecipeDocument } from 'src/recipes/schemas/recipe.schema';
 
 @Injectable()
 export class SuppliesService {
@@ -54,11 +55,18 @@ export class SuppliesService {
 
   async update(id: string, updateSupplyDto: Partial<CreateSupplyDto>) {
     const supply = await this.findOne(id);
-    if (!supply) {
-      throw new NotFoundException('supply not found');
-    }
+    if (!supply) throw new NotFoundException('Insumo no encontrado');
+
     Object.assign(supply, updateSupplyDto);
     return supply.save();
+  }
+
+  async updateUsedIn(recipe: RecipeDocument, suppliesIds: string[]) {
+    const supplies = await this.findSupplies(suppliesIds);
+    supplies.forEach((supply) => {
+      supply.usedIn.push(recipe);
+      supply.save();
+    });
   }
 
   async addBatch(supply: SupplyDocument, batch: BatchDocument) {
