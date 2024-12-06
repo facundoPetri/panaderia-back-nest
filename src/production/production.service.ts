@@ -18,30 +18,32 @@ export class ProductionService {
   }
 
   findAll() {
-    return this.productionModel.find().populate(['recipe', 'user']).exec();
+    return this.productionModel
+      .find()
+      .populate(['recipe', 'user', 'machine'])
+      .exec();
   }
 
   findOne(id: string) {
     return this.productionModel
       .findOne({ _id: id })
-      .populate(['recipe', 'user'])
+      .populate(['recipe', 'user', 'machine'])
       .exec();
   }
 
   async update(id: string, updateProductionDto: UpdateProductionDto) {
     const prod = await this.findOne(id);
     if (!prod) {
-      throw new NotFoundException('Order not found');
+      throw new NotFoundException('Informe no encontrado');
     }
     Object.assign(prod, updateProductionDto);
     return prod.save();
   }
 
-  remove(id: string) {
-    const order = this.findOne(id);
-    if (!order) {
-      throw new NotFoundException('Order not found');
-    }
+  async remove(id: string) {
+    const prod = await this.findOne(id);
+    if (!prod) throw new NotFoundException('Informe no encontrado');
+
     return this.productionModel.deleteOne({ _id: id });
   }
 }
