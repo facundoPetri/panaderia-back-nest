@@ -86,8 +86,8 @@ export class AuthService {
     };
   }
 
-  generateToken({ email, _id }: User) {
-    const payload = { email, sub: _id };
+  generateToken({ email, _id, fullname }: User) {
+    const payload = { email, sub: _id, fullname };
     return this.jwtService.signAsync(payload);
   }
 }
