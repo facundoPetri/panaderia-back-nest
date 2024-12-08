@@ -6,6 +6,10 @@ export class CreateReportingOrderDto {
   @IsString()
   name: string;
 
+  @ApiProperty({ description: 'Username' })
+  @IsString()
+  author: string;
+
   @ApiProperty({ description: 'Order ID' })
   @IsMongoId()
   order: string;
