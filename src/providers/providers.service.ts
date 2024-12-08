@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateProviderDto } from './dto/create-provider.dto';
@@ -11,7 +11,14 @@ export class ProvidersService {
     @InjectModel(Provider.name) private providerModel: Model<Provider>,
   ) {}
 
-  create(createProviderDto: CreateProviderDto) {
+  async create(createProviderDto: CreateProviderDto) {
+    const existingProvider = await this.providerModel.findOne({
+      name: createProviderDto.name,
+    });
+
+    if (existingProvider)
+      throw new BadRequestException('Ya existe una receta con este nombre');
+
     const provider = new this.providerModel(createProviderDto);
     return provider.save();
   }
