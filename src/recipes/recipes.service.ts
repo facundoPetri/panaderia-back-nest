@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -15,6 +19,13 @@ export class RecipesService {
   ) {}
 
   async create(createRecipeDto: CreateRecipeDto, user: any) {
+    const existingSupply = await this.recipeModel.findOne({
+      name: createRecipeDto.name,
+    });
+
+    if (existingSupply)
+      throw new BadRequestException('Ya existe una receta con este nombre');
+
     const recipe = new this.recipeModel(createRecipeDto);
     recipe.author = user._id;
 

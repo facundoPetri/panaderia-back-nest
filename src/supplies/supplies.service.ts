@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateSupplyDto } from './dto/create-supply.dto';
@@ -12,7 +16,14 @@ export class SuppliesService {
     @InjectModel(Supply.name) private readonly supplyModel: Model<Supply>,
   ) {}
 
-  create(createSupplyDto: CreateSupplyDto) {
+  async create(createSupplyDto: CreateSupplyDto) {
+    const existingSupply = await this.supplyModel.findOne({
+      name: createSupplyDto.name,
+    });
+
+    if (existingSupply)
+      throw new BadRequestException('Ya existe un insumo con este nombre');
+
     const supply = new this.supplyModel(createSupplyDto);
     return supply.save();
   }
