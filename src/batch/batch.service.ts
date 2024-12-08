@@ -9,11 +9,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Batch } from './schemas/batch.schema';
 import { Model, Types } from 'mongoose';
 import { CreateSuppliesUsageDto } from 'src/supplies-usage/dto/create-supplies-usage.dto';
+import { SuppliesService } from 'src/supplies/supplies.service';
 
 @Injectable()
 export class BatchService {
   constructor(
     @InjectModel(Batch.name) private readonly batchModel: Model<Batch>,
+    private readonly suppliesService: SuppliesService,
   ) {}
 
   create(createBatchDto: CreateBatchDto) {
@@ -63,6 +65,7 @@ export class BatchService {
   }
 
   async updateBatchQuantities(suppliesUsages: CreateSuppliesUsageDto[]) {
+    let supplyNames = '';
     for (const supplyUsage of suppliesUsages) {
       const { supply, quantity } = supplyUsage;
 
@@ -76,10 +79,18 @@ export class BatchService {
         0,
       );
 
-      if (quantity > totalQuantity)
-        throw new BadRequestException(
-          'No hay suficiente stock de uno o más insumos',
-        );
+      if (quantity > totalQuantity) {
+        const supplyName =
+          batches[0]?.supply_id?.name ||
+          (await this.suppliesService.findOne(supply)).name;
+        supplyNames += `${supplyNames.length ? ', ' : ''}${supplyName}`;
+      }
+    }
+
+    if (supplyNames.length) {
+      throw new BadRequestException(
+        `No hay suficiente stock para los siguientes productos: ${supplyNames}`,
+      );
     }
 
     for (const supplyUsage of suppliesUsages) {
