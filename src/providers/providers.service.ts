@@ -17,7 +17,7 @@ export class ProvidersService {
     });
 
     if (existingProvider)
-      throw new BadRequestException('Ya existe una receta con este nombre');
+      throw new BadRequestException('Ya existe un proveedor con este nombre');
 
     const provider = new this.providerModel(createProviderDto);
     return provider.save();
