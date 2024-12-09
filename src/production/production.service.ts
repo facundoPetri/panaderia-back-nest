@@ -22,7 +22,7 @@ export class ProductionService {
   findAll() {
     return this.productionModel
       .find()
-      .populate(['recipe', 'user', 'machine'])
+      .populate(['recipe', 'user', 'equipment'])
       .exec();
   }
 
