@@ -44,7 +44,9 @@
     </div>
   </div>
   <h5 class='text-center fw-bold'>{{title}}</h5>
-
+  {{#if subtitle}}
+    <h6 class='text-center text-muted mb-4'>{{subtitle}}</h6>
+  {{/if}}
   <div class='table-container mr-5 ml-5 m-1'>
     <table class='table table-bordered'>
       <thead class='table-secondary'>

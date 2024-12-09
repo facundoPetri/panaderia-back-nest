@@ -86,6 +86,7 @@ export class OrdersService {
           model: 'Provider',
         },
       ])
+      .lean()
       .exec();
   }
 

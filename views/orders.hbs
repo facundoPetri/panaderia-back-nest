@@ -2,18 +2,24 @@
   {{#each data}}
     <tr>
       <td>{{number}}</td>
-      <td>{{date}}</td>
       <td>{{provider.name}}</td>
+      <td>{{state}}</td>
       <td>
         {{#each supplies}}
           {{#if @first}}
-            {{this.name}}
+            {{this}}
           {{else}}
             ,
-            {{this.name}}
+            {{this}}
           {{/if}}
         {{/each}}
       </td>
+      <td>{{formatDate created_at}}</td>
+      {{#if received_date}}
+        <td>{{formatDate received_date}}</td>
+      {{else}}
+        <td>-</td>
+      {{/if}}
     </tr>
   {{/each}}
 </tbody>

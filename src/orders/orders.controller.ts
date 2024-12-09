@@ -56,15 +56,23 @@ export class OrdersController {
     @CurrentUser() user: User,
   ): Promise<void> {
     const orders = await this.ordersService.findAll();
+
     const html = generatePdf({
       title: 'Listado de pedidos a proveedores',
+      subtitle:
+        'Listado de todos los pedidos a proveedores ordenados por numero de pedido',
       user: user.fullname,
-      data: orders,
+      data: orders.map((order) => ({
+        ...order,
+        supplies: order.supplies.map((supply) => supply.supplyId.name),
+      })),
       headers: [
         'Número de pedido',
-        'Fecha de creación',
         'Proveedor',
+        'Estado del pedido',
         'Insumos',
+        'Fecha de creación',
+        'Fecha de entrega',
       ],
       tableTemplate: 'orders',
     });
