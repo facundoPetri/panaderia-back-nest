@@ -12,13 +12,13 @@ export class Production extends Document {
   @Prop({ required: true, type: 'ObjectId', ref: 'User' })
   user: User;
 
-  @Prop({ required: true })
-  number: Date;
+  @Prop()
+  number: number;
 
   @Prop({ required: false })
   comments: string;
 
-  @Prop({ required: true })
+  @Prop()
   total_time: number;
 
   @Prop({ required: true })
