@@ -104,9 +104,6 @@ export class OrdersService {
     if (!order) {
       throw new NotFoundException('Order not found');
     }
-    if (order.state !== OrderState.CREATED) {
-      throw new BadRequestException('Order cannot be updated');
-    }
     Object.assign(order, updateOrderDto);
     return order.save();
   }
