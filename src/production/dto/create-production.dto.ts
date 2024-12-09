@@ -16,11 +16,6 @@ export class CreateProductionDto {
   @IsNotEmpty()
   recipe: string;
 
-  @ApiProperty({ description: 'Production number' })
-  @IsDate()
-  @Type(() => Date)
-  number: Date;
-
   @ApiPropertyOptional({ description: 'Optional comments' })
   @IsString()
   @IsOptional()
