@@ -29,7 +29,7 @@ export class ProductionService {
   findOne(id: string) {
     return this.productionModel
       .findOne({ _id: id })
-      .populate(['recipe', 'user', 'machine'])
+      .populate(['recipe', 'user', 'equipment'])
       .exec();
   }
 
