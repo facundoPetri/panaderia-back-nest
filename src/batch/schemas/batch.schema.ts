@@ -38,7 +38,9 @@ BatchSchema.statics.getNextBatchNumber = async function () {
 BatchSchema.pre('save', async function (next) {
   if (this.isNew) {
     const doc = this as BatchDocument;
-    doc.batch_number = await (this.constructor as any).getNextBatchNumber();
+    if (!doc.batch_number || doc.batch_number === 1) {
+      doc.batch_number = await (this.constructor as any).getNextBatchNumber();
+    }
   }
   next();
 });

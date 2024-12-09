@@ -55,13 +55,16 @@ export class BatchService {
       ])
       .exec();
 
-    if (allStock.totalQuantity + quantity > allStock.supply.max_stock) {
+    if (
+      allStock &&
+      allStock.totalQuantity + quantity > allStock.supply.max_stock
+    ) {
       throw new BadRequestException(
         'Este pedido supera el stock máximo permitido para este producto',
       );
     }
 
-    return allStock;
+    return allStock ?? 0;
   }
 
   async updateBatchQuantities(suppliesUsages: CreateSuppliesUsageDto[]) {
@@ -133,7 +136,14 @@ export class BatchService {
         .lean()
         .exec();
     }
-    return this.batchModel.find().populate('supply_id').lean().exec();
+    return this.batchModel
+      .find()
+      .populate('supply_id')
+      .sort({
+        batch_number: -1,
+      })
+      .lean()
+      .exec();
   }
 
   findOne(id: string) {

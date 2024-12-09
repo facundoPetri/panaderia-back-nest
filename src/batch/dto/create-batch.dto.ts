@@ -1,6 +1,10 @@
-import { IsNumber, IsDateString, IsMongoId } from 'class-validator';
+import { IsNumber, IsDateString, IsMongoId, IsOptional } from 'class-validator';
 
 export class CreateBatchDto {
+  @IsOptional()
+  @IsNumber()
+  batch_number?: number;
+
   @IsDateString()
   expiration_date: Date;
 

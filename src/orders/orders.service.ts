@@ -41,8 +41,10 @@ export class OrdersService {
         ),
       );
 
+      const [lastBatch] = await this.batchService.findAll(false);
+
       await Promise.all(
-        orderToUpdate.supplies.map((supply) => {
+        orderToUpdate.supplies.map((supply, index) => {
           this.batchService.create({
             supply_id: supply.supplyId.toString(),
             date_of_entry: new Date(),
@@ -50,6 +52,7 @@ export class OrdersService {
             quantity: supply.quantity,
             row: null,
             column: null,
+            batch_number: lastBatch.batch_number + (index + 1),
           });
         }),
       );
@@ -86,7 +89,6 @@ export class OrdersService {
           model: 'Provider',
         },
       ])
-      .lean()
       .exec();
   }
 
