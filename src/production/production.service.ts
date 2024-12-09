@@ -4,6 +4,7 @@ import { UpdateProductionDto } from './dto/update-production.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Production } from './schemas/production.schema';
 import { Model } from 'mongoose';
+import { User } from 'src/users/schemas/user.schema';
 
 @Injectable()
 export class ProductionService {
@@ -12,8 +13,9 @@ export class ProductionService {
     private readonly productionModel: Model<Production>,
   ) {}
 
-  create(createProductionDto: CreateProductionDto) {
+  create(createProductionDto: CreateProductionDto, currentUser: User) {
     const production = new this.productionModel(createProductionDto);
+    production.user = currentUser;
     return production.save();
   }
 

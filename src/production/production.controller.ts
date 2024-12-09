@@ -16,6 +16,8 @@ import {
   ApiOperation,
   ApiResponse,
 } from '@nestjs/swagger';
+import { CurrentUser } from 'src/users/decorators/current-user.decorator';
+import { User } from 'src/users/schemas/user.schema';
 
 @ApiBearerAuth()
 @ApiTags('production')
@@ -30,8 +32,11 @@ export class ProductionController {
     description: 'Production record created successfully.',
   })
   @ApiResponse({ status: 400, description: 'Bad request.' })
-  create(@Body() createProductionDto: CreateProductionDto) {
-    return this.productionService.create(createProductionDto);
+  create(
+    @Body() createProductionDto: CreateProductionDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.productionService.create(createProductionDto, user);
   }
 
   @Get()

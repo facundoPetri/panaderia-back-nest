@@ -16,11 +16,6 @@ export class CreateProductionDto {
   @IsNotEmpty()
   recipe: string;
 
-  @ApiProperty({ description: 'User ID' })
-  @IsMongoId()
-  @IsNotEmpty()
-  user: string;
-
   @ApiProperty({ description: 'Production number' })
   @IsDate()
   @Type(() => Date)
