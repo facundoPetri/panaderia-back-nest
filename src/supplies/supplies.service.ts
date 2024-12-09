@@ -28,7 +28,12 @@ export class SuppliesService {
     return supply.save();
   }
 
-  async findAll() {
+  async findAll(orderBy = 'current_stock') {
+    const sortField = {
+      name: 'name',
+      current_stock: 'current_stock',
+    };
+
     const supplies = await this.supplyModel.aggregate([
       {
         $lookup: {
@@ -44,6 +49,11 @@ export class SuppliesService {
           current_stock: {
             $sum: '$batches.quantity',
           },
+        },
+      },
+      {
+        $sort: {
+          [sortField[orderBy]]: 1,
         },
       },
     ]);
