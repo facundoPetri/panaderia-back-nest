@@ -6,7 +6,7 @@ export type ProviderDocument = HydratedDocument<Provider>;
 
 @Schema()
 export class Provider {
-  @Prop()
+  @Prop({ unique: true })
   name: string;
 
   @Prop()

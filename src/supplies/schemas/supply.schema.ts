@@ -7,7 +7,7 @@ export type SupplyDocument = HydratedDocument<Supply>;
 
 @Schema()
 export class Supply {
-  @Prop()
+  @Prop({ unique: true })
   name: string;
 
   @Prop()

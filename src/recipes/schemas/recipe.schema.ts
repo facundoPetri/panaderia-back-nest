@@ -7,7 +7,7 @@ export type RecipeDocument = HydratedDocument<Recipe>;
 
 @Schema()
 export class Recipe {
-  @Prop()
+  @Prop({ unique: true })
   name: string;
 
   @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: 'Supply' }])
