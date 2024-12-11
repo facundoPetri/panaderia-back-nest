@@ -8,6 +8,7 @@ import {
   Delete,
   Header,
   Res,
+  ForbiddenException,
 } from '@nestjs/common';
 import { Response } from 'express';
 
@@ -19,6 +20,7 @@ import { PdfService } from 'src/pdf/pdf.service';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from './schemas/user.schema';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiBearerAuth()
 @Controller('users')
@@ -27,11 +29,6 @@ export class UsersController {
     private readonly usersService: UsersService,
     private pdfService: PdfService,
   ) {}
-
-  @Post()
-  create(@Body() createUserDto: SignUpDto) {
-    return this.usersService.create(createUserDto);
-  }
 
   @Get()
   findAll() {
@@ -82,13 +79,22 @@ export class UsersController {
   @Patch(':id')
   update(
     @Param('id', ParseObjectIdPipe) id: string,
-    @Body() signUpDto: Partial<SignUpDto>,
+    @Body() updateUserDto: Partial<UpdateUserDto>,
   ) {
-    return this.usersService.update(id, signUpDto);
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseObjectIdPipe) id: string) {
+  async remove(
+    @Param('id', ParseObjectIdPipe) id: string,
+    @CurrentUser() currentUser: User,
+  ) {
+    const user = await this.usersService.findOne(currentUser._id.toString());
+    if (user.type !== 'admin')
+      throw new ForbiddenException(
+        'No tienes permisos para realizar esta acción',
+      );
+
     return this.usersService.remove(id);
   }
 }
