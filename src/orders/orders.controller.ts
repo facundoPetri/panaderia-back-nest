@@ -145,6 +145,11 @@ export class OrdersController {
     @Param('id', ParseObjectIdPipe) id: string,
     @Body() updateStateOrderDto: UpdateStateOrderDto,
   ) {
+    if (updateStateOrderDto.supplies?.length) {
+      await this.ordersService.update(id, {
+        supplies: updateStateOrderDto.supplies,
+      });
+    }
     const updatedOrder = await this.ordersService.updateState(
       id,
       updateStateOrderDto.state,

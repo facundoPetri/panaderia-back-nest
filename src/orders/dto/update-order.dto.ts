@@ -1,14 +1,12 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateOrderDto } from './create-order.dto';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { OrderState } from '../schemas/orders.schema';
+import { ArrayMinSize, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { SupplyQuantityDto } from 'src/waste/dto/create-waste.dto';
 
 export class UpdateOrderDto extends PartialType(CreateOrderDto) {
-  @IsOptional()
-  @IsEnum(OrderState)
-  state?: OrderState;
-
-  @IsOptional()
-  @IsString()
-  cancelled_description?: string;
+  @ValidateNested({ each: true })
+  @ArrayMinSize(1)
+  @Type(() => SupplyQuantityDto)
+  supplies: SupplyQuantityDto[];
 }

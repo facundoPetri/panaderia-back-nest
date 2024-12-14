@@ -31,16 +31,15 @@ export class OrdersService {
       .findById(id)
       .populate('supplies');
 
-    if (state === OrderState.COMPLETED) {
-      await Promise.all(
-        orderToUpdate.supplies.map((supply) =>
-          this.batchService.getAllStock(
-            supply.supplyId.toString(),
-            supply.quantity,
-          ),
+    await Promise.all(
+      orderToUpdate.supplies.map((supply) =>
+        this.batchService.getAllStock(
+          supply.supplyId.toString(),
+          supply.quantity,
         ),
-      );
-
+      ),
+    );
+    if (state === OrderState.COMPLETED) {
       const [lastBatch] = await this.batchService.findAll(false);
 
       await Promise.all(
@@ -89,6 +88,7 @@ export class OrdersService {
           model: 'Provider',
         },
       ])
+      .lean()
       .exec();
   }
 
