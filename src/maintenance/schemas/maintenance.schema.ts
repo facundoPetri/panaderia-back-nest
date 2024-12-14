@@ -7,6 +7,9 @@ export type MaintenanceDocument = HydratedDocument<Maintenance>;
 
 @Schema()
 export class Maintenance {
+  @Prop({ unique: true })
+  number: number;
+
   @Prop()
   description: string;
 
@@ -21,3 +24,16 @@ export class Maintenance {
 }
 
 export const MaintenanceSchema = SchemaFactory.createForClass(Maintenance);
+
+MaintenanceSchema.statics.getNextOrderNumber = async function () {
+  const lastMaintenance = await this.findOne().sort('-number');
+  return lastMaintenance ? lastMaintenance.number + 1 : 1;
+};
+
+MaintenanceSchema.pre('save', async function (next) {
+  if (this.isNew) {
+    const doc = this as MaintenanceDocument;
+    doc.number = await (this.constructor as any).getNextOrderNumber();
+  }
+  next();
+});
