@@ -48,7 +48,6 @@ export class RecipesController {
         'Autor',
         'Nombre',
         'Ingredientes',
-        'Usos',
         'Fecha de creación',
         'Fecha de modificación',
       ],

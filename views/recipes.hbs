@@ -8,11 +8,11 @@
           {{#if @first}}
             {{this.name}}
           {{else}}
-            , {{this.name}}
+            ,
+            {{this.name}}
           {{/if}}
         {{/each}}
       </td>
-      <td>{{uses}}</td>
       <td>{{formatDate createdAt}}</td>
       <td>{{formatDate updatedAt}}</td>
     </tr>

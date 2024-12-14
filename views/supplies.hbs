@@ -2,7 +2,11 @@
   {{#each data}}
     <tr>
       <td>{{name}}</td>
-      <td>{{formatDate batches.[0].date_of_entry}}</td>
+      {{#if batches.[0].date_of_entry}}
+        <td>{{formatDate batches.[0].date_of_entry}}</td>
+      {{else}}
+        <td>-</td>
+      {{/if}}
       <td>{{current_stock}}</td>
       <td>{{description}}</td>
     </tr>
