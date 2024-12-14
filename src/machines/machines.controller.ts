@@ -8,6 +8,7 @@ import {
   Delete,
   Header,
   Res,
+  Query,
 } from '@nestjs/common';
 import { MachinesService } from './machines.service';
 import { CreateMachineDto } from './dto/create-machine.dto';
@@ -23,7 +24,10 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 @ApiBearerAuth()
 @Controller('machines')
 export class MachinesController {
-  constructor(private readonly machinesService: MachinesService, private readonly pdfService: PdfService) {}
+  constructor(
+    private readonly machinesService: MachinesService,
+    private readonly pdfService: PdfService,
+  ) {}
 
   @Post()
   create(@Body() createMachineDto: CreateMachineDto) {
@@ -33,7 +37,10 @@ export class MachinesController {
   @Get('generate-pdf')
   @Header('Content-Type', 'application/pdf')
   @Header('Content-Disposition', 'attachment; filename="machines.pdf"')
-  async generatePdf(@Res() res: Response, @CurrentUser() user: User): Promise<void> {
+  async generatePdf(
+    @Res() res: Response,
+    @CurrentUser() user: User,
+  ): Promise<void> {
     const machines = await this.machinesService.findAll();
 
     const html = generatePdf({
@@ -63,8 +70,8 @@ export class MachinesController {
   }
 
   @Get()
-  findAll() {
-    return this.machinesService.findAll();
+  findAll(@Query('require_maintenance') requireMaintenance?: string) {
+    return this.machinesService.findAll(requireMaintenance);
   }
 
   @Get(':id')

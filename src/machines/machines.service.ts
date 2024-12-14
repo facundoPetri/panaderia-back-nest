@@ -10,7 +10,7 @@ import { getDaysDifference } from '../../helpers/utils';
 @Injectable()
 export class MachinesService {
   constructor(
-    @InjectModel(Machine.name) private machineModel: Model<Machine>,
+    @InjectModel(Machine.name) private readonly machineModel: Model<Machine>,
   ) {}
 
   create(createMachineDto: CreateMachineDto) {
@@ -18,7 +18,7 @@ export class MachinesService {
     return machine.save();
   }
 
-  async findAll(): Promise<Machine[]> {
+  async findAll(requireMaintenance?: string): Promise<Machine[]> {
     const machines = await this.machineModel.aggregate([
       {
         $lookup: {
@@ -95,7 +95,13 @@ export class MachinesService {
       machine.require_maintenance = diff > machine.desired_maintenance;
     });
 
-    return machines;
+    const isMaintenanceNeeded = requireMaintenance === 'true';
+
+    return requireMaintenance
+      ? machines.filter(
+          (machine) => machine.require_maintenance === isMaintenanceNeeded,
+        )
+      : machines;
   }
 
   findOne(id: string) {
