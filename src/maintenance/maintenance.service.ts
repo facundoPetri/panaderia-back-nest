@@ -8,9 +8,10 @@ import { Model } from 'mongoose';
 @Injectable()
 export class MaintenanceService {
   constructor(
-    @InjectModel(Maintenance.name) private maintenanceModel: Model<Maintenance>,
+    @InjectModel(Maintenance.name)
+    private readonly maintenanceModel: Model<Maintenance>,
   ) {}
-  
+
   create(createMaintenanceDto: CreateMaintenanceDto, user: any) {
     const maintenance = new this.maintenanceModel(createMaintenanceDto);
     maintenance.user = user._id;
@@ -18,11 +19,18 @@ export class MaintenanceService {
   }
 
   findAll(): Promise<Maintenance[]> {
-    return this.maintenanceModel.find().populate(['user', 'machine']).exec();
+    return this.maintenanceModel
+      .find()
+      .sort({ date: -1 })
+      .populate(['user', 'machine'])
+      .exec();
   }
 
   findOne(id: string) {
-    return this.maintenanceModel.findById(id).populate(['user', 'machine']).exec();
+    return this.maintenanceModel
+      .findById(id)
+      .populate(['user', 'machine'])
+      .exec();
   }
 
   async update(id: string, updateMaintenanceDto: UpdateMaintenanceDto) {
