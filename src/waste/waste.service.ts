@@ -57,6 +57,7 @@ export class WasteService {
           model: 'User',
         },
       ])
+      .sort({ date: -1 })
       .lean()
       .exec();
   }
