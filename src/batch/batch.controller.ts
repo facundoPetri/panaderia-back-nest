@@ -97,8 +97,9 @@ export class BatchController {
   findAll(
     @Query('days') days: number,
     @Query('expiring') expiring: boolean = false,
+    @Query('filter_expiring') filter_expiring: boolean = false,
   ) {
-    return this.batchService.findAll(expiring, +days);
+    return this.batchService.findAll(expiring, +days, !!filter_expiring);
   }
 
   @Get(':id')
