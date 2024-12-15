@@ -24,7 +24,12 @@ export class ProvidersService {
   }
 
   findAll(): Promise<Provider[]> {
-    return this.providerModel.find().populate('supplies').lean().exec();
+    return this.providerModel
+      .find()
+      .sort({ createdAt: -1 })
+      .populate('supplies')
+      .lean()
+      .exec();
   }
 
   findOne(id: string) {
