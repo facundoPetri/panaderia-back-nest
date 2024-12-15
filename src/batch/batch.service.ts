@@ -117,7 +117,7 @@ export class BatchService {
     }
   }
 
-  findAll(expiring: boolean, days = 7) {
+  findAll(expiring: boolean, days = 7, filterExpiring = false) {
     if (expiring) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -136,8 +136,9 @@ export class BatchService {
         .lean()
         .exec();
     }
+    const query = filterExpiring ? { expiration_date: null } : {};
     return this.batchModel
-      .find()
+      .find(query)
       .populate('supply_id')
       .sort({
         batch_number: -1,
